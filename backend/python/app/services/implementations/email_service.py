@@ -25,7 +25,13 @@ class EmailService(IEmailService):
         :type display_name: str, optional
         """
         self.logger = logger
-        creds = Credentials(None, **credentials)
+        creds = Credentials(
+            token=credentials.get("token"),
+            refresh_token=credentials.get("refresh_token"),
+            client_id=credentials.get("client_id"),
+            client_secret=credentials.get("client_secret"),
+            token_uri=credentials.get("token_uri")
+        )
         self.service = build("gmail", "v1", credentials=creds)
         self.sender_email = sender_email
         if display_name:

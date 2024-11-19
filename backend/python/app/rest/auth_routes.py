@@ -17,6 +17,7 @@ user_service = UserService(current_app.logger)
 email_service = EmailService(
     current_app.logger,
     {
+        "token": os.getenv("MAILER_TOKEN"),
         "refresh_token": os.getenv("MAILER_REFRESH_TOKEN"),
         "token_uri": "https://oauth2.googleapis.com/token",
         "client_id": os.getenv("MAILER_CLIENT_ID"),
