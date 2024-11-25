@@ -24,7 +24,7 @@ email_service = EmailService(
         "client_secret": os.getenv("MAILER_CLIENT_SECRET"),
     },
     os.getenv("MAILER_USER"),
-    "Display Name",  # must replace
+    "SMVS Youth App",  # must replace
 )
 auth_service = AuthService(current_app.logger, user_service, email_service)
 

@@ -7,3 +7,7 @@
 4. Run: `docker exec -it <python-backend-container-name> /bin/bash -c "flask db upgrade"` to seed your DB
 5. Go to `http://localhost:3000/login` and click sign up. Use your real email address
 6. Verify your email address (check your inbox) and you are done! 
+
+## Modify Postgres table
+1. Exec into the DB container `docker exec -it <db-container-name> /bin/bash`
+2. Access the postgres DB `psql -U postgres -d scv2`
