@@ -29,7 +29,7 @@ class UserService(IUserService):
 
             firebase_user = firebase_admin.auth.get_user(user.auth_id)
 
-            user_dict = UserService.__user_to_dict_and_remove_auth_id(user)
+            user_dict = UserService.__user_to_dict_and_remove_unused(user)
             user_dict["email"] = firebase_user.email
 
             return UserDTO(**user_dict)
@@ -54,7 +54,7 @@ class UserService(IUserService):
                     )
                 )
 
-            user_dict = UserService.__user_to_dict_and_remove_auth_id(user)
+            user_dict = UserService.__user_to_dict_and_remove_unused(user)
             user_dict["email"] = firebase_user.email
 
             return UserDTO(**user_dict)
@@ -114,7 +114,7 @@ class UserService(IUserService):
         user_dtos = []
         user_list = [result for result in User.query.all()]
         for user in user_list:
-            user_dict = UserService.__user_to_dict_and_remove_auth_id(user)
+            user_dict = UserService.__user_to_dict_and_remove_unused(user)
             try:
                 firebase_user = firebase_admin.auth.get_user(user.auth_id)
                 user_dict["email"] = firebase_user.email
@@ -146,6 +146,7 @@ class UserService(IUserService):
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "auth_id": firebase_user.uid,
+                "email_address": user.email,
                 "role": user.role,
             }
 
@@ -180,7 +181,7 @@ class UserService(IUserService):
             )
             raise e
 
-        new_user_dict = UserService.__user_to_dict_and_remove_auth_id(new_user)
+        new_user_dict = UserService.__user_to_dict_and_remove_unused(new_user)
         new_user_dict["email"] = firebase_user.email
         return UserDTO(**new_user_dict)
 
@@ -387,7 +388,7 @@ class UserService(IUserService):
         return user
 
     @staticmethod
-    def __user_to_dict_and_remove_auth_id(user):
+    def __user_to_dict_and_remove_unused(user):
         """
         Convert a User document to a serializable dict and remove the
         auth id field
@@ -397,4 +398,8 @@ class UserService(IUserService):
         """
         user_dict = user.to_dict()
         user_dict.pop("auth_id", None)
+        user_dict.pop("email_address", None)
+        user_dict.pop("phone_number", None)
+        user_dict.pop("location", None)
+        user_dict.pop("interests", None)
         return user_dict
