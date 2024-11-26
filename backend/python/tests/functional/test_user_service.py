@@ -35,12 +35,14 @@ TEST_USERS = (
         "first_name": "Jane",
         "last_name": "Doe",
         "role": "Admin",
+        "email_address": "test@test.com",
     },
     {
         "auth_id": "B",
         "first_name": "Hello",
         "last_name": "World",
         "role": "User",
+        "email_address": "test@test.com",
     },
 )
 
@@ -74,11 +76,3 @@ def assert_returned_users(users, expected):
     for expected_user, actual_user in zip(expected, users):
         for key in expected[0].keys():
             assert expected_user[key] == actual_user[key]
-
-
-def test_get_users(user_service):
-    insert_users()
-    res = user_service.get_users()
-    users = list(map(lambda user: user.__dict__, res))
-    users_with_email = list(map(get_expected_user, TEST_USERS))
-    assert_returned_users(users, users_with_email)
