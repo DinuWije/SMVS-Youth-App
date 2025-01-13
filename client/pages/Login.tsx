@@ -41,7 +41,7 @@ const Login = () => {
       <Text>Login</Text>
       <Formik
         initialValues={{ email: '', password: '' }}
-        onSubmit={(values, actions) => {
+        onSubmit={(_, actions) => {
           setTimeout(() => {
             actions.setSubmitting(false)
           }, 1000)
