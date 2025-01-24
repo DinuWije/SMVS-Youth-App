@@ -37,8 +37,10 @@ const Login = () => {
   }
 
   return (
-    <CenteredLayout>
-      <Text>Login</Text>
+    <View>
+      <Text style={{ fontFamily: 'Poppins-Bold' }} className="text-4xl">
+        Login
+      </Text>
       <Formik
         initialValues={{ email: '', password: '' }}
         onSubmit={(_, actions) => {
@@ -51,7 +53,7 @@ const Login = () => {
         {(formikProps) => (
           <React.Fragment>
             <View>
-              <Text>Email</Text>
+              <Text style={{ fontFamily: 'Inter-Regular' }}>Email address</Text>
               <TextInput
                 placeholder="johndoe@example.com"
                 placeholderTextColor="#AAAAAA"
@@ -65,7 +67,7 @@ const Login = () => {
             </View>
 
             <View>
-              <Text>Password</Text>
+              <Text style={{ fontFamily: 'Inter-Regular' }}>Password</Text>
               <TextInput
                 placeholder="Password"
                 placeholderTextColor="#AAAAAA"
@@ -106,7 +108,7 @@ const Login = () => {
           </React.Fragment>
         )}
       </Formik>
-    </CenteredLayout>
+    </View>
   )
 }
 
