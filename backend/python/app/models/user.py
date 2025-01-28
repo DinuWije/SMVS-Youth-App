@@ -18,6 +18,7 @@ class User(db.Model):
     phone_number = db.Column(db.String, nullable=True)
     location = db.Column(db.String, nullable=True)
     interests = db.Column(db.ARRAY(db.String), nullable=True)
+    allow_notifs = db.Column(db.Boolean, nullable=False, default=False)
 
     def to_dict(self, include_relationships=False):
         # define the entities table

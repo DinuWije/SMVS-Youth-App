@@ -4,6 +4,11 @@ class UpdateUserDTO:
         self.last_name = kwargs.get("last_name")
         self.email = kwargs.get("email")
         self.role = kwargs.get("role")
+        self.email_address = kwargs.get("email")
+        self.phone_number = kwargs.get("phone_number")
+        self.location = kwargs.get("location")
+        self.interests = kwargs.get("interests")
+        self.allow_notifs = kwargs.get("allow_notifs")
 
     def validate(self):
         error_list = []
