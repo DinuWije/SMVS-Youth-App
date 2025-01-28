@@ -197,6 +197,11 @@ class UserService(IUserService):
                     User.first_name: user.first_name,
                     User.last_name: user.last_name,
                     User.role: user.role,
+                    User.email_address: user.email,
+                    User.phone_number: user.phone_number,
+                    User.location: user.location,
+                    User.interests: user.interests,
+                    User.allow_notifs: user.allow_notifs,
                 }
             )
 
@@ -210,6 +215,11 @@ class UserService(IUserService):
                         User.first_name: old_user.first_name,
                         User.last_name: old_user.last_name,
                         User.role: old_user.role,
+                        User.email_address: old_user.email_address,
+                        User.phone_number: old_user.phone_number,
+                        User.location: old_user.location,
+                        User.interests: old_user.interests,
+                        User.allow_notifs: old_user.allow_notifs,
                     }
                     User.query.filter_by(id=user_id).update(**old_user_dict)
                     db.session.commit()
@@ -402,4 +412,5 @@ class UserService(IUserService):
         user_dict.pop("phone_number", None)
         user_dict.pop("location", None)
         user_dict.pop("interests", None)
+        user_dict.pop("allow_notifs", None)
         return user_dict
