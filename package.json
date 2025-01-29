@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@vtsls/language-server": "^0.2.6"
+    "@vtsls/language-server": "^0.2.6",
+    "expo-linear-gradient": "^14.0.2"
   }
 }

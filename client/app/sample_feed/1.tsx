@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import NavigationBar from '../../components/NavigationBar';
@@ -6,6 +7,12 @@ import NavigationBar from '../../components/NavigationBar';
 const FeedDetails = () => {
   const router = useRouter();
   const { id, title, author, date, content, user, color } = useLocalSearchParams();
+  const [liked, setLiked] = useState(false); // Track like state
+
+  // Toggle like state
+  const toggleLike = () => {
+    setLiked(!liked);
+  };
 
   return (
     <View className="flex-1 bg-white">
@@ -41,12 +48,16 @@ const FeedDetails = () => {
           <TouchableOpacity>
             <FontAwesome name="comment-o" size={22} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <FontAwesome name="heart-o" size={22} color="black" />
+
+          {/* Like Button (Toggles Heart Color) */}
+          <TouchableOpacity onPress={toggleLike}>
+            <FontAwesome name={liked ? "heart" : "heart-o"} size={22} color={liked ? "red" : "black"} />
           </TouchableOpacity>
+
           <TouchableOpacity>
             <FontAwesome5 name="link" size={20} color="black" />
           </TouchableOpacity>
+
           <TouchableOpacity>
             <FontAwesome name="bookmark-o" size={22} color="black" />
           </TouchableOpacity>
@@ -71,7 +82,7 @@ const FeedDetails = () => {
           </View>
           <View className="flex-row justify-between mt-2">
             <Text className="text-gray-500">Likes</Text>
-            <Text className="font-semibold">1</Text>
+            <Text className="font-semibold">{liked ? "2" : "1"}</Text> {/* Increment when liked */}
           </View>
         </View>
 
@@ -81,8 +92,9 @@ const FeedDetails = () => {
           <Text className="font-semibold">Comment</Text>
         </TouchableOpacity>
       </ScrollView>
-      <NavigationBar />
 
+      {/* Navigation Bar */}
+      <NavigationBar />
     </View>
   );
 };

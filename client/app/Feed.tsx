@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import NavigationBar from '../components/NavigationBar';
 
@@ -16,7 +16,7 @@ const Feed = () => {
 
   // Function to toggle like
   const toggleLike = (id: string) => {
-    setPosts(posts.map(post => 
+    setPosts(posts.map(post =>
       post.id === id ? { ...post, liked: !post.liked } : post
     ));
   };
@@ -65,6 +65,15 @@ const Feed = () => {
         )}
       />
 
+      {/* Floating Add Button (Simple & Modern) */}
+      <TouchableOpacity
+        className="absolute bottom-20 right-5 bg-blue-500 p-4 rounded-full shadow-lg flex items-center justify-center"
+        onPress={() => router.push('/CreateFeed')}
+      >
+        <Ionicons name="add" size={40} color="white" />
+      </TouchableOpacity>
+
+      {/* Bottom Navigation */}
       <NavigationBar />
     </View>
   );
