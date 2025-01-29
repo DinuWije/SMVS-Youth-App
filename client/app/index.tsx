@@ -1,6 +1,8 @@
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Welcome from '@/pages/Welcome'
+import Feed from './Feed'
+
 import { createStackNavigator } from '@react-navigation/stack'
 import '../global.css'
 import { useFonts } from 'expo-font'
@@ -18,8 +20,9 @@ const App = () => {
         headerShown: false,
       }}
     >
+      <Stack.Screen name="Feed" component={Feed} />
       {/* <Stack.Screen name="Welcome" component={Welcome} /> */}
-      <Stack.Screen name="Login" component={Login} />
+      {/* <Stack.Screen name="Login" component={Login} /> */}
       {/* <Stack.Screen name="Register" component={Register} /> */}
     </Stack.Navigator>
   )
