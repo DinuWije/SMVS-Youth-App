@@ -5,7 +5,6 @@ from ..resources.entity_dto import EntityDTO
 from ..resources.simple_entity_dto import SimpleEntityDTO
 from ..resources.register_user_dto import RegisterUserDTO
 from ..resources.update_user_dto import UpdateUserDTO
-import json
 
 dtos = {
     "CreateUserDTO": CreateUserDTO,

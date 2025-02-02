@@ -24,110 +24,55 @@ export type EntityResponse = {
   stringArrayField: string[];
   enumField: EnumField;
   boolField: boolean;
-  fileName: string;
 };
 
 const create = async ({
   formData,
 }: {
-  formData: EntityRequest | FormData;
+  formData: EntityRequest;
 }): Promise<EntityResponse | null> => {
-  // auth {
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
     "accessToken",
   )}`;
-  console.log(bearerToken);
-  // } auth
   try {
-    // auth {
     const { data } = await baseAPIClient.post("/entities", formData, {
       headers: { Authorization: bearerToken },
     });
-    
-    // } auth
-
-    // no-auth {
-    // const { data } = await baseAPIClient.post("/entities", formData);
-    // } no-auth
     return data;
   } catch (error) {
-    console.log(error);
     return null;
   }
 };
 
 const get = async (): Promise<EntityResponse[] | null> => {
-  // auth {
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
     "accessToken",
   )}`;
-  // } auth
   try {
-    // auth {
     const { data } = await baseAPIClient.get("/entities", {
       headers: { Authorization: bearerToken },
     });
-    // } auth
-
-    // no-auth {
-    // const { data } = await baseAPIClient.get("/entities");
-    // } no-auth
     return data;
-  } catch (error) {
-    return null;
-  }
-};
-
-const getFile = async (uuid: string): Promise<string | null> => {
-  // auth {
-  const bearerToken = `Bearer ${getLocalStorageObjProperty(
-    AUTHENTICATED_USER_KEY,
-    "accessToken",
-  )}`;
-  // } auth
-  try {
-    // auth {
-    const { data } = await baseAPIClient.get(`/entities/files/${uuid}`, {
-      headers: { Authorization: bearerToken },
-    });
-    // } auth
-
-    // no-auth {
-    // const { data } = await baseAPIClient.get(`/entities/files/${uuid}`);
-    // } no-auth
-    return data.fileURL || data.fileUrl;
   } catch (error) {
     return null;
   }
 };
 
 const getCSV = async (): Promise<string | null> => {
-  // auth {
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
     "accessToken",
   )}`;
-  // } auth
   try {
-    // auth {
     const { data } = await baseAPIClient.get("/entities", {
       // Following line is necessary to set the Content-Type header
       // Reference: https://github.com/axios/axios/issues/86
       data: null,
       headers: { Authorization: bearerToken, "Content-Type": "text/csv" },
     });
-    // } auth
 
-    // no-auth {
-    // const { data } = await baseAPIClient.get("/entities", {
-    //   // Following line is necessary to set the Content-Type header
-    //   // Reference: https://github.com/axios/axios/issues/86
-    //   data: null,
-    //   headers: { "Content-Type": "text/csv" },
-    // });
-    // } no-auth
     return data;
   } catch (error) {
     return null;
@@ -139,29 +84,21 @@ const update = async (
   {
     entityData,
   }: {
-    entityData: EntityRequest | FormData;
+    entityData: EntityRequest;
   },
 ): Promise<EntityResponse | null> => {
-  // auth {
   const bearerToken = `Bearer ${getLocalStorageObjProperty(
     AUTHENTICATED_USER_KEY,
     "accessToken",
   )}`;
-  // } auth
   try {
-    // auth {
     const { data } = await baseAPIClient.put(`/entities/${id}`, entityData, {
       headers: { Authorization: bearerToken },
     });
-    // } auth
-
-    // no-auth {
-    // const { data } = await baseAPIClient.put(`/entities/${id}`, entityData);
-    // } no-auth
     return data;
   } catch (error) {
     return null;
   }
 };
 
-export default { create, get, getFile, getCSV, update };
+export default { create, get, getCSV, update };
