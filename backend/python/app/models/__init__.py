@@ -9,7 +9,9 @@ def init_app(app):
     from .entity import Entity
     from .simple_entity import SimpleEntity
     from .user import User
-
+    from .feed import Feed
+    from .user_comment import UserComment
+    
     app.app_context().push()
     db.init_app(app)
     migrate.init_app(app, db)
