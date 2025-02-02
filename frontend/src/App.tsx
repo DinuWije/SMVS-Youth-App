@@ -26,6 +26,7 @@ import EditTeamInfoPage from "./components/pages/EditTeamPage";
 import HooksDemo from "./components/pages/HooksDemo";
 
 import { AuthenticatedUser } from "./types/AuthTypes";
+import UploadPage from "./components/pages/UploadPage";
 
 const App = (): React.ReactElement => {
   const currentUser: AuthenticatedUser = getLocalStorageObj<AuthenticatedUser>(
@@ -95,6 +96,11 @@ const App = (): React.ReactElement => {
                 exact
                 path={Routes.HOOKS_PAGE}
                 component={HooksDemo}
+              />
+              <PrivateRoute
+                exact
+                path={Routes.UPLOAD_PAGE}
+                component={UploadPage}
               />
               <Route exact path="*" component={NotFound} />
             </Switch>
