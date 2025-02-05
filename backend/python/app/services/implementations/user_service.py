@@ -410,7 +410,6 @@ class UserService(IUserService):
         user_dict.pop("auth_id", None)
         user_dict.pop("email_address", None)
         user_dict.pop("phone_number", None)
-        user_dict.pop("location", None)
         user_dict.pop("interests", None)
         user_dict.pop("allow_notifs", None)
         return user_dict
