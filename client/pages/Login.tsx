@@ -37,7 +37,7 @@ const Login = () => {
   }
 
   return (
-    <View>
+    <View className="flex-1 bg-white">
       <Text style={{ fontFamily: 'Poppins-Bold' }} className="text-4xl">
         Login
       </Text>
@@ -55,6 +55,7 @@ const Login = () => {
             <View>
               <Text style={{ fontFamily: 'Inter-Regular' }}>Email address</Text>
               <TextInput
+                className=""
                 placeholder="johndoe@example.com"
                 placeholderTextColor="#AAAAAA"
                 onChangeText={formikProps.handleChange('email')} //
