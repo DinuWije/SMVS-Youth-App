@@ -58,6 +58,7 @@ def login():
                 "last_name": auth_dto.last_name,
                 "email": auth_dto.email,
                 "role": auth_dto.role,
+                "location": auth_dto.location,
             }
         )
         response.set_cookie(
