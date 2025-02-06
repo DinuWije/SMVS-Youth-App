@@ -20,3 +20,15 @@ class IFeedService(ABC):
     @abstractmethod
     def delete_entity(self, id):
         pass
+
+    @abstractmethod
+    def add_like(self, feed_id, user_id):
+        pass
+
+    @abstractmethod
+    def add_comment(self, feed_id, user_id, content, parent_id=None):
+        pass
+
+    @abstractmethod
+    def increment_view_count(self, feed_id):
+        pass

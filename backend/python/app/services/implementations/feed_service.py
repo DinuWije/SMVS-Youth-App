@@ -1,6 +1,7 @@
 from ...models.feed import Feed
 from ...models import db
 from ..interfaces.feed_service import IFeedService
+from ...models.user_comment import UserComment
 
 
 class FeedService(IFeedService):
@@ -62,3 +63,48 @@ class FeedService(IFeedService):
 
         self.logger.error("Invalid id")
         raise Exception("Invalid id")
+
+    def add_like(self, feed_id, user_id):
+        """Increment likes_count and update users_who_have_liked."""
+        feed = Feed.query.get(feed_id)
+        if not feed:
+            raise Exception("Invalid feed ID")
+
+        if user_id in feed.users_who_have_liked:
+            raise Exception("User has already liked this post")
+
+        feed.likes_count += 1
+        feed.users_who_have_liked.append(user_id)
+
+        db.session.commit()
+        return feed.to_dict()
+
+    def add_comment(self, feed_id, user_id, content, parent_id=None):
+            """Create a comment on a feed post and update comments_count."""
+            feed = Feed.query.get(feed_id)
+            if not feed:
+                raise Exception("Invalid feed ID")
+
+            new_comment = UserComment(
+                feed_id=feed_id,
+                user_id=user_id,
+                content=content,
+                parent_id=parent_id
+            )
+
+            db.session.add(new_comment)
+            feed.comments_count += 1  # Increment comment count in Feed table
+            db.session.commit()
+
+            return feed.to_dict()
+
+    def increment_view_count(self, feed_id):
+        """Increment views_count."""
+        feed = Feed.query.get(feed_id)
+        if not feed:
+            raise Exception("Invalid feed ID")
+
+        feed.views_count += 1
+
+        db.session.commit()
+        return feed.to_dict()

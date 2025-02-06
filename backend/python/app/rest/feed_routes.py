@@ -110,3 +110,52 @@ def delete_feed(feed_id):
     except Exception as e:
         error_message = getattr(e, "message", None)
         return jsonify({"error": error_message if error_message else str(e)}), 500
+
+@blueprint.route("/<int:feed_id>/comment", methods=["POST"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def add_comment(feed_id):
+    """
+    Add a comment to a feed post and update the comment count.
+    """
+    try:
+        data = request.json
+        user_id = data.get("user_id")
+        content = data.get("content")
+        parent_id = data.get("parent_id")  # Optional for threaded comments
+
+        if not user_id or not content:
+            return jsonify({"error": "User ID and content are required"}), 400
+
+        updated_feed = feed_service.add_comment(feed_id, user_id, content, parent_id)
+        return jsonify(updated_feed), 201
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": error_message if error_message else str(e)}), 500
+
+@blueprint.route("/<int:feed_id>/like", methods=["POST"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def add_like(feed_id):
+    """
+    Add a like to a feed post.
+    """
+    try:
+        user_id = request.json.get("user_id")
+        updated_feed = feed_service.add_like(feed_id, user_id)
+        return jsonify(updated_feed), 200
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": error_message if error_message else str(e)}), 500
+
+
+@blueprint.route("/<int:feed_id>/view", methods=["POST"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def increment_view(feed_id):
+    """
+    Increment the view count of a feed post.
+    """
+    try:
+        updated_feed = feed_service.increment_view_count(feed_id)
+        return jsonify(updated_feed), 200
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": error_message if error_message else str(e)}), 500
