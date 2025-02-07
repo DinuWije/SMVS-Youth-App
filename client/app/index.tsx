@@ -20,10 +20,10 @@ const App = () => {
         headerShown: false,
       }}
     >
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="Feed" component={Feed} />
-      {/* <Stack.Screen name="Welcome" component={Welcome} /> */}
-      {/* <Stack.Screen name="Login" component={Login} /> */}
-      {/* <Stack.Screen name="Register" component={Register} /> */}
     </Stack.Navigator>
   )
 }
