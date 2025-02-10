@@ -40,6 +40,7 @@ def create_app(config_name):
 
     app.config["CORS_ORIGINS"] = [
         "http://localhost:3000",
+        "http://localhost:8081",  
         "https://uw-blueprint-starter-code.firebaseapp.com",
         "https://uw-blueprint-starter-code.web.app",
         re.compile("^https:\/\/uw-blueprint-starter-code--pr.*\.web\.app$"),
