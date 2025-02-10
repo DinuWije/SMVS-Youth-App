@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import '../global.css'
 import { useFonts } from 'expo-font'
 import ProfileSettings from '@/app/ProfileSettings'
+import ChangePassword from './ChangePassword'
 
 const Stack = createStackNavigator()
 
@@ -28,6 +29,7 @@ const App = () => {
         options={{ headerTitle: 'Settings' }}
       />
       <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
       <Stack.Screen name="Feed" component={Feed} />
 
       {/* <Stack.Screen name="Welcome" component={Welcome} /> */}

@@ -18,7 +18,7 @@ const ProfileSettings = () => {
           <Ionicons name="arrow-back-outline" size={24} color="black" />
         </TouchableOpacity>
         <Text className="text-xl font-bold text-black ml-4">
-          Profile Settings
+          Profile Information
         </Text>
       </View>
 

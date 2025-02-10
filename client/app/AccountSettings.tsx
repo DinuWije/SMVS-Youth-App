@@ -39,7 +39,10 @@ const AccountSettings = () => {
         </TouchableOpacity>
 
         {/* Change Password */}
-        <TouchableOpacity className="flex-row items-center justify-between border-b border-gray-200 py-4">
+        <TouchableOpacity
+          className="flex-row items-center justify-between border-b border-gray-200 py-4"
+          onPress={() => router.push('./ChangePassword')}
+        >
           <View className="flex-row items-center">
             <Ionicons name="lock-closed-outline" size={26} color="gray" />
             <View className="pl-4">
