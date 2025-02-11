@@ -8,7 +8,7 @@ const Welcome = ({ navigation }) => {
         <Image source={require('../assets/images/smvs_logo.png')} />
       </View>
 
-      <View className="flex-1 justify-center">
+      <View className="flex-1 mb-16 justify-center">
         <View className="my-12 items-center">
           <Text
             style={{ fontFamily: 'Poppins-Bold' }}
@@ -29,7 +29,7 @@ const Welcome = ({ navigation }) => {
             className="bg-black rounded-lg my-2 p-5 w-[90%]"
             onPress={() => navigation.navigate('Login')}
           >
-            <Text className="font-bold text-center text-white">Login</Text>
+            <Text className="font-bold text-center text-white">Log In</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
