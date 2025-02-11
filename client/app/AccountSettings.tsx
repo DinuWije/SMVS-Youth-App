@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TouchableOpacity, Switch, Alert } from 'react-native'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Switch,
+  Alert,
+  Modal,
+} from 'react-native'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import NavigationBar from '../components/NavigationBar'
 import { Colors } from '@/constants/Colors'
@@ -7,6 +14,7 @@ import { useRouter } from 'expo-router'
 import SettingsAPIClient, {
   SettingsUserInfoResponse,
 } from '@/APIClients/SettingsAPIClient'
+import AuthAPIClient from '@/APIClients/AuthAPIClient'
 
 const AccountSettings = () => {
   const router = useRouter()
@@ -15,6 +23,8 @@ const AccountSettings = () => {
   const [userData, setUserData] = useState<SettingsUserInfoResponse | null>(
     null
   )
+
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -61,6 +71,25 @@ const AccountSettings = () => {
     }
   }
 
+  const handleSendPasswordChangeEmail = async () => {
+    if (!userData) return
+
+    try {
+      const resetLinkSent = await AuthAPIClient.resetPassword(userData?.email)
+
+      if (!resetLinkSent) {
+        throw new Error('Failed to send link')
+      }
+      setShowModal(true)
+    } catch (error) {
+      console.error('Error sending password reset email:', error)
+      Alert.alert(
+        'Error',
+        'Failed to send password reset email. Please try again.'
+      )
+    }
+  }
+
   return (
     <View className="flex-1 bg-white">
       {/* Header */}
@@ -95,25 +124,6 @@ const AccountSettings = () => {
           <Ionicons name="chevron-forward-outline" size={20} color="gray" />
         </TouchableOpacity>
 
-        {/* Change Password */}
-        <TouchableOpacity
-          className="flex-row items-center justify-between border-b border-gray-200 py-4"
-          onPress={() => router.push('./ChangePassword')}
-        >
-          <View className="flex-row items-center">
-            <Ionicons name="lock-closed-outline" size={26} color="gray" />
-            <View className="pl-4">
-              <Text className="text-base font-semibold text-black">
-                Change Password
-              </Text>
-              <Text className="text-sm text-gray-500">
-                Change your password
-              </Text>
-            </View>
-          </View>
-          <Ionicons name="chevron-forward-outline" size={20} color="gray" />
-        </TouchableOpacity>
-
         {/* Interests */}
         <TouchableOpacity className="flex-row items-center justify-between border-b border-gray-200 py-4">
           <View className="flex-row items-center">
@@ -128,6 +138,24 @@ const AccountSettings = () => {
             </View>
           </View>
           <Ionicons name="chevron-forward-outline" size={20} color="gray" />
+        </TouchableOpacity>
+
+        {/* Change Password */}
+        <TouchableOpacity
+          className="flex-row items-center justify-between border-b border-gray-200 py-4"
+          onPress={handleSendPasswordChangeEmail}
+        >
+          <View className="flex-row items-center">
+            <Ionicons name="lock-closed-outline" size={26} color="gray" />
+            <View className="pl-4">
+              <Text className="text-base font-semibold text-black">
+                Change Password
+              </Text>
+              <Text className="text-sm text-gray-500">
+                Send an email with a secure reset link
+              </Text>
+            </View>
+          </View>
         </TouchableOpacity>
 
         {/* Notifications Section */}
@@ -157,32 +185,6 @@ const AccountSettings = () => {
             }}
           />
         </View>
-
-        {/* SMS Notifications */}
-        {/* <View className="flex-row items-center justify-between border-b border-gray-200 py-4">
-          <View className="flex-row items-center">
-            <Ionicons name="chatbubble-outline" size={26} color="gray" />
-            <View className="pl-4">
-              <Text className="text-base font-semibold text-black">
-                SMS Notifications
-              </Text>
-              <Text className="text-sm text-gray-500">
-                For daily updates, you will get it
-              </Text>
-            </View>
-          </View>
-
-          <Switch
-            value={smsNotifications}
-            onValueChange={setSmsNotifications}
-            trackColor={{
-              false: 'gray',
-              true: Colors.light.accentPurple,
-            }}
-            thumbColor={smsNotifications ? 'white' : 'white'}
-            ios_backgroundColor="gray"
-          />
-        </View> */}
 
         {/* More Section */}
         <Text className="text-lg font-semibold text-gray-700 mt-8">MORE</Text>
@@ -217,6 +219,29 @@ const AccountSettings = () => {
 
       {/* Bottom Navigation */}
       <NavigationBar />
+
+      <Modal visible={showModal} transparent={true} animationType="fade">
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white p-6 rounded-lg w-3/4">
+            <Text className="text-lg font-bold text-black">
+              Password Reset Email Sent!
+            </Text>
+            <Text className="text-gray-600 mt-2">
+              Please check your junk folder if you don't see the email.
+            </Text>
+
+            <TouchableOpacity
+              className="mt-4 p-2 rounded"
+              onPress={() => setShowModal(false)}
+              style={{
+                backgroundColor: Colors.light.accentPurple,
+              }}
+            >
+              <Text className="text-white text-center">OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }

@@ -89,7 +89,9 @@ const resetPassword = async (email: string | undefined): Promise<boolean> => {
     await baseAPIClient.post(
       `/auth/resetPassword/${email}`,
       {},
-      { headers: { Authorization: bearerToken } }
+      {
+        // headers: { Authorization: bearerToken }
+      }
     )
     return true
   } catch (error) {
