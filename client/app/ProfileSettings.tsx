@@ -1,14 +1,78 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Modal,
+} from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
-import { Colors } from '@/constants/Colors' // Assuming your Colors file is here
+import { useRouter, useLocalSearchParams } from 'expo-router'
+import { Colors } from '@/constants/Colors'
+import SettingsAPIClient, {
+  SettingsUserInfoResponse,
+  UpdateSettingsUserInfoRequest,
+} from '@/APIClients/SettingsAPIClient'
 
 const ProfileSettings = () => {
   const router = useRouter()
-  const [fullName, setFullName] = useState('My Name')
-  const [email, setEmail] = useState('name.lastname@email.com')
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const { userData } = useLocalSearchParams()
+
+  // Ensure userData is a string before parsing
+  const parsedUserData =
+    typeof userData === 'string' ? JSON.parse(userData) : {}
+
+  // State for form fields
+  const [firstName, setFirstName] = useState(parsedUserData.firstName || '')
+  const [lastName, setLastName] = useState(parsedUserData.lastName || '')
+  const [email, setEmail] = useState(parsedUserData.email || '')
+  const [phoneNumber, setPhoneNumber] = useState(
+    parsedUserData.phoneNumber || ''
+  )
+  const [showModal, setShowModal] = useState(false)
+
+  // Effect to update state if userData changes (e.g., if reloaded)
+  useEffect(() => {
+    setFirstName(parsedUserData.firstName || '')
+    setLastName(parsedUserData.lastName || '')
+    setEmail(parsedUserData.email || '')
+    setPhoneNumber(parsedUserData.phoneNumber || '')
+  }, [userData])
+
+  const handleSubmit = async () => {
+    if (!userData) return
+
+    const phoneRegex =
+      /^(\+?\d{1,3})?[-.\s]?(\(?\d{3}\)?)[-.\s]?\d{3}[-.\s]?\d{4}$/
+
+    if (!phoneRegex.test(phoneNumber)) {
+      setShowModal(true)
+      return
+    }
+
+    const updatedUserData: UpdateSettingsUserInfoRequest = {
+      ...parsedUserData,
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+    }
+
+    try {
+      const updatedUser = await SettingsAPIClient.update(parsedUserData.id, {
+        entityData: updatedUserData,
+      })
+
+      if (!updatedUser) {
+        throw new Error('Failed to update notifications')
+      }
+    } catch (error) {
+      console.error('Error updating notifications:', error)
+      Alert.alert('Error', 'Failed to update settings. Please try again.')
+    }
+    router.back()
+  }
 
   return (
     <View className="flex-1 bg-white">
@@ -24,23 +88,23 @@ const ProfileSettings = () => {
 
       {/* Form */}
       <View className="flex-1 px-4 py-6 space-y-6">
-        {/* Full Name */}
+        {/* First Name */}
         <View>
-          <Text className="text-xs text-gray-500">FULL NAME</Text>
+          <Text className="text-xs text-gray-500">FIRST NAME</Text>
           <TextInput
             className="border-b border-gray-300 text-lg text-black py-2"
-            value={fullName}
-            onChangeText={setFullName}
+            value={firstName}
+            onChangeText={setFirstName}
           />
         </View>
 
-        {/* Email Address */}
-        <View className="py-6">
-          <Text className="text-xs text-gray-500">EMAIL ADDRESS</Text>
+        {/* Last Name */}
+        <View>
+          <Text className="text-xs text-gray-500">LAST NAME</Text>
           <TextInput
             className="border-b border-gray-300 text-lg text-black py-2"
-            value={email}
-            onChangeText={setEmail}
+            value={lastName}
+            onChangeText={setLastName}
           />
         </View>
 
@@ -55,21 +119,16 @@ const ProfileSettings = () => {
           />
         </View>
 
-        {/* Password */}
-        {/* <View className="flex-row items-center justify-between border-b border-gray-300 py-2">
-          <View>
-            <Text className="text-xs text-gray-500">PASSWORD</Text>
-            <Text className="text-lg text-black">************</Text>
-          </View>
-          <TouchableOpacity>
-            <Text
-              className="text-base"
-              style={{ color: Colors.light.accentPurple, fontWeight: 'bold' }}
-            >
-              Change
-            </Text>
-          </TouchableOpacity>
-        </View> */}
+        {/* Email Address */}
+        <View className="py-6">
+          <Text className="text-xs text-gray-500">EMAIL ADDRESS</Text>
+          <TextInput
+            className="border-b border-gray-300 text-lg text-black py-2"
+            value={email}
+            editable={false}
+            style={{ opacity: 0.5 }}
+          />
+        </View>
       </View>
 
       {/* Submit Button */}
@@ -80,12 +139,36 @@ const ProfileSettings = () => {
             borderRadius: 10,
             paddingVertical: 16,
           }}
+          onPress={handleSubmit}
         >
           <Text className="text-center text-white text-lg font-bold">
             SAVE CHANGES
           </Text>
         </TouchableOpacity>
       </View>
+
+      <Modal visible={showModal} transparent={true} animationType="fade">
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white p-6 rounded-lg w-3/4">
+            <Text className="text-lg font-bold text-black">
+              Invalid Phone Number
+            </Text>
+            <Text className="text-gray-600 mt-2">
+              Please enter a valid phone number.
+            </Text>
+
+            <TouchableOpacity
+              className="mt-4 p-2 rounded"
+              onPress={() => setShowModal(false)}
+              style={{
+                backgroundColor: Colors.light.accentPurple,
+              }}
+            >
+              <Text className="text-white text-center">OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
