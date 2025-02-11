@@ -95,7 +95,7 @@ const AccountSettings = () => {
             value={pushNotifications}
             onValueChange={setPushNotifications}
             trackColor={{
-              false: Colors.light.accentPurple,
+              false: 'gray',
               true: Colors.light.accentPurple,
             }}
           />
@@ -119,9 +119,11 @@ const AccountSettings = () => {
             value={smsNotifications}
             onValueChange={setSmsNotifications}
             trackColor={{
-              false: Colors.light.accentPurple,
+              false: 'gray',
               true: Colors.light.accentPurple,
             }}
+            thumbColor={smsNotifications ? 'white' : 'white'}
+            ios_backgroundColor="gray"
           />
         </View>
 
