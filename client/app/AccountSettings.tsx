@@ -1,14 +1,65 @@
-import React, { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, Switch } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, TouchableOpacity, Switch, Alert } from 'react-native'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import NavigationBar from '../components/NavigationBar'
 import { Colors } from '@/constants/Colors'
 import { useRouter } from 'expo-router'
+import SettingsAPIClient, {
+  SettingsUserInfoResponse,
+} from '@/APIClients/SettingsAPIClient'
 
 const AccountSettings = () => {
   const router = useRouter()
-  const [pushNotifications, setPushNotifications] = useState(true)
-  const [smsNotifications, setSmsNotifications] = useState(false)
+
+  // User information state
+  const [userData, setUserData] = useState<SettingsUserInfoResponse | null>(
+    null
+  )
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const userId = 16
+        const response = (await SettingsAPIClient.get(
+          userId
+        )) as SettingsUserInfoResponse[]
+
+        if (response && response.length > 0) {
+          setUserData(response[0])
+        } else {
+          console.warn('No data received from API')
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile data:', error)
+        Alert.alert('Error', 'Failed to load profile data. Please try again.')
+      }
+    }
+
+    fetchProfileData()
+  }, [])
+
+  const handleToggleNotifs = async () => {
+    if (!userData) return
+
+    const updatedNotifs = !userData.allowNotifs
+    setUserData((prev) => prev && { ...prev, allowNotifs: updatedNotifs }) // Optimistically update UI
+
+    try {
+      const updatedUser = await SettingsAPIClient.update(userData.id, {
+        entityData: { ...userData, allowNotifs: updatedNotifs },
+      })
+
+      if (!updatedUser) {
+        throw new Error('Failed to update notifications')
+      }
+    } catch (error) {
+      console.error('Error updating notifications:', error)
+      Alert.alert('Error', 'Failed to update settings. Please try again.')
+
+      // Revert UI if API call fails
+      setUserData((prev) => prev && { ...prev, allowNotifs: !updatedNotifs })
+    }
+  }
 
   return (
     <View className="flex-1 bg-white">
@@ -22,7 +73,13 @@ const AccountSettings = () => {
         {/* Profile Information */}
         <TouchableOpacity
           className="flex-row items-center justify-between border-b border-gray-200 py-4"
-          onPress={() => router.push('./ProfileSettings')}
+          onPress={() =>
+            router.push({
+              pathname: './ProfileSettings',
+              params: { userData: JSON.stringify(userData) },
+            })
+          }
+          disabled={!userData}
         >
           <View className="flex-row items-center">
             <Ionicons name="person-outline" size={26} color="gray" />
@@ -57,7 +114,7 @@ const AccountSettings = () => {
           <Ionicons name="chevron-forward-outline" size={20} color="gray" />
         </TouchableOpacity>
 
-        {/* Locations */}
+        {/* Interests */}
         <TouchableOpacity className="flex-row items-center justify-between border-b border-gray-200 py-4">
           <View className="flex-row items-center">
             <Ionicons name="flash-outline" size={26} color="gray" />
@@ -87,13 +144,13 @@ const AccountSettings = () => {
                 Push Notifications
               </Text>
               <Text className="text-sm text-gray-500">
-                For daily updates, you will get it
+                Stay up to date with push notifications
               </Text>
             </View>
           </View>
           <Switch
-            value={pushNotifications}
-            onValueChange={setPushNotifications}
+            value={userData?.allowNotifs}
+            onValueChange={handleToggleNotifs}
             trackColor={{
               false: 'gray',
               true: Colors.light.accentPurple,
@@ -102,7 +159,7 @@ const AccountSettings = () => {
         </View>
 
         {/* SMS Notifications */}
-        <View className="flex-row items-center justify-between border-b border-gray-200 py-4">
+        {/* <View className="flex-row items-center justify-between border-b border-gray-200 py-4">
           <View className="flex-row items-center">
             <Ionicons name="chatbubble-outline" size={26} color="gray" />
             <View className="pl-4">
@@ -125,7 +182,7 @@ const AccountSettings = () => {
             thumbColor={smsNotifications ? 'white' : 'white'}
             ios_backgroundColor="gray"
           />
-        </View>
+        </View> */}
 
         {/* More Section */}
         <Text className="text-lg font-semibold text-gray-700 mt-8">MORE</Text>

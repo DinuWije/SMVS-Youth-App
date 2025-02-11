@@ -248,7 +248,7 @@ class UserService(IUserService):
             )
             raise e
 
-        return UserDTO(user_id, user.first_name, user.last_name, user.email, user.role)
+        return UserDTO(user_id, user.first_name, user.last_name, user.email, user.role, user.phone_number, user.location, user.interests, user.allow_notifs)
 
     def delete_user_by_id(self, user_id):
         try:
