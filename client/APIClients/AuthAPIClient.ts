@@ -25,7 +25,7 @@ const login = async (
     await AsyncStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data))
     return data
   } catch (error) {
-    return null
+    throw error
   }
 }
 
@@ -73,10 +73,10 @@ const register = async (
       { firstName, lastName, email, password },
       { withCredentials: true }
     )
-    await AsyncStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data))
+    // await AsyncStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data))
     return data
   } catch (error) {
-    return null
+    throw error
   }
 }
 
