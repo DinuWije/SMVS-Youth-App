@@ -14,6 +14,8 @@ import SettingsAPIClient, {
   SettingsUserInfoResponse,
   UpdateSettingsUserInfoRequest,
 } from '@/APIClients/SettingsAPIClient'
+import { Picker } from '@react-native-picker/picker'
+import locationsData from './data/locations.json'
 
 const ProfileSettings = () => {
   const router = useRouter()
@@ -29,6 +31,10 @@ const ProfileSettings = () => {
   const [email, setEmail] = useState(parsedUserData.email || '')
   const [phoneNumber, setPhoneNumber] = useState(
     parsedUserData.phoneNumber || ''
+  )
+  const locations = locationsData.locations
+  const [selectedLocation, setSelectedLocation] = useState(
+    parsedUserData.location || 'New York'
   )
   const [showModal, setShowModal] = useState(false)
 
@@ -57,6 +63,7 @@ const ProfileSettings = () => {
       lastName,
       email,
       phoneNumber,
+      location: selectedLocation,
     }
 
     try {
@@ -97,7 +104,6 @@ const ProfileSettings = () => {
             onChangeText={setFirstName}
           />
         </View>
-
         {/* Last Name */}
         <View>
           <Text className="text-xs text-gray-500">LAST NAME</Text>
@@ -107,7 +113,6 @@ const ProfileSettings = () => {
             onChangeText={setLastName}
           />
         </View>
-
         {/* Phone Number */}
         <View>
           <Text className="text-xs text-gray-500">PHONE NUMBER</Text>
@@ -118,7 +123,21 @@ const ProfileSettings = () => {
             keyboardType="phone-pad"
           />
         </View>
-
+        {/* Location */}
+        <View>
+          <Text className="text-xs text-gray-500">LOCATION</Text>
+          <View className="border-b border-gray-300">
+            <Picker
+              selectedValue={selectedLocation}
+              onValueChange={(itemValue) => setSelectedLocation(itemValue)}
+              style={{ height: 50, width: '100%' }}
+            >
+              {locations.map((location, index) => (
+                <Picker.Item key={index} label={location} value={location} />
+              ))}
+            </Picker>
+          </View>
+        </View>
         {/* Email Address */}
         <View className="py-6">
           <Text className="text-xs text-gray-500">EMAIL ADDRESS</Text>

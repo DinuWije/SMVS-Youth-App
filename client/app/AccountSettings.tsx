@@ -139,7 +139,15 @@ const AccountSettings = () => {
         </TouchableOpacity>
 
         {/* Interests */}
-        <TouchableOpacity className="flex-row items-center justify-between border-b border-gray-200 py-4">
+        <TouchableOpacity
+          className="flex-row items-center justify-between border-b border-gray-200 py-4"
+          onPress={() =>
+            router.push({
+              pathname: './SettingsInterests',
+              params: { userData: JSON.stringify(userData) },
+            })
+          }
+        >
           <View className="flex-row items-center">
             <Ionicons name="flash-outline" size={26} color="gray" />
             <View className="pl-4">

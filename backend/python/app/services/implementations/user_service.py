@@ -31,7 +31,6 @@ class UserService(IUserService):
 
             user_dict = UserService.__user_to_dict_and_remove_unused(user)
             user_dict["email"] = firebase_user.email
-            print("HERE", user_dict)
             return UserDTO(**user_dict)
         except Exception as e:
             reason = getattr(e, "message", None)

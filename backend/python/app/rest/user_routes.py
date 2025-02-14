@@ -35,7 +35,7 @@ DEFAULT_CSV_OPTIONS = {
 
 
 @blueprint.route("/", methods=["GET"], strict_slashes=False)
-# @require_authorization_by_role({"User", "Admin"})
+@require_authorization_by_role({"User", "Admin"})
 def get_users():
     """
     Get all users, optionally filter by a user_id or email query parameter to retrieve a single user
@@ -113,7 +113,7 @@ def create_user():
 
 
 @blueprint.route("/<int:user_id>", methods=["PUT"], strict_slashes=False)
-# @require_authorization_by_role({"User", "Admin"})
+@require_authorization_by_role({"User", "Admin"})
 @validate_request("UpdateUserDTO")
 def update_user(user_id):
     """
