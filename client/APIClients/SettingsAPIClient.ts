@@ -1,6 +1,9 @@
 import baseAPIClient from './BaseAPIClient'
 import AUTHENTICATED_USER_KEY from '../constants/AuthConstants'
-import { getLocalStorageObjProperty } from '../utils/LocalStorageUtils'
+import {
+  getLocalStorageObj,
+  getLocalStorageObjProperty,
+} from '../utils/LocalStorageUtils'
 
 export type SettingsUserInfoResponse = {
   id: string | number
@@ -25,38 +28,44 @@ export type UpdateSettingsUserInfoRequest = {
   interests: string[]
 }
 
-const get = async (
-  userId: string | number
-): Promise<SettingsUserInfoResponse[] | null> => {
-  const bearerToken = `Bearer ${getLocalStorageObjProperty(
-    AUTHENTICATED_USER_KEY,
-    'accessToken'
-  )}`
+const get = async (): Promise<SettingsUserInfoResponse[] | null> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+  if (userObject == null) {
+    console.log('Error getting user object')
+    return null
+  }
+
+  const bearerToken = `Bearer ${userObject!['accessToken']}`
+  const userId = userObject['id']
+
   try {
     const { data } = await baseAPIClient.get(`/users?user_id=${userId}`, {
-      //   headers: { Authorization: bearerToken },
+      headers: { Authorization: bearerToken },
     })
+    console.log(bearerToken)
     return data
   } catch (error) {
     return null
   }
 }
 
-const update = async (
-  id: number | string,
-  {
-    entityData,
-  }: {
-    entityData: UpdateSettingsUserInfoRequest
+const update = async ({
+  entityData,
+}: {
+  entityData: UpdateSettingsUserInfoRequest
+}): Promise<SettingsUserInfoResponse | null> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+  if (userObject == null) {
+    console.log('Error getting user object')
+    return null
   }
-): Promise<SettingsUserInfoResponse | null> => {
-  const bearerToken = `Bearer ${getLocalStorageObjProperty(
-    AUTHENTICATED_USER_KEY,
-    'accessToken'
-  )}`
+
+  const bearerToken = `Bearer ${userObject!['accessToken']}`
+  const userId = userObject['id']
+
   try {
-    const { data } = await baseAPIClient.put(`/users/${id}`, entityData, {
-      //   headers: { Authorization: bearerToken },
+    const { data } = await baseAPIClient.put(`/users/${userId}`, entityData, {
+      headers: { Authorization: bearerToken },
     })
     return data
   } catch (error) {
