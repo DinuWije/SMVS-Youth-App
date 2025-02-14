@@ -10,12 +10,14 @@ import { useFonts } from 'expo-font'
 import ProfileSettings from '@/app/ProfileSettings'
 import ChangePassword from './ChangePassword'
 import AuthProvider from '@/contexts/AuthProvider'
+import Interests from '@/pages/Interests'
 
 const Stack = createStackNavigator()
 
 const App = () => {
   const [fontsLoaded] = useFonts({
     'Poppins-Bold': require('../assets/fonts/Poppins-Bold.ttf'),
+    'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
   })
   return (
@@ -36,6 +38,7 @@ const App = () => {
         />
         <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="Interests" component={Interests} />
       </Stack.Navigator>
     </AuthProvider>
   )

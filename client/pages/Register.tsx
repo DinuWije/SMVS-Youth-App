@@ -1,6 +1,11 @@
 import React, { useContext, useEffect } from 'react'
 import { View, TextInput, Image, Text, TouchableOpacity } from 'react-native'
-import { FORM_CONTAINER, FORM_LABEL, FORM_INPUT } from '@/constants/Classes'
+import {
+  FORM_CONTAINER,
+  FORM_LABEL,
+  FORM_INPUT,
+  LOGO,
+} from '@/constants/Classes'
 import authAPIClient from '@/APIClients/AuthAPIClient'
 import AuthContext from '@/contexts/AuthContext'
 import { AuthenticatedUser } from '@/types/AuthTypes'
@@ -47,7 +52,7 @@ const Register = ({ navigation }) => {
 
   useEffect(() => {
     if (authenticatedUser) {
-      navigation.navigate('Feed')
+      navigation.navigate('Interests')
     }
   }, [authenticatedUser, navigation])
 
@@ -55,7 +60,7 @@ const Register = ({ navigation }) => {
     <View className={FORM_CONTAINER}>
       <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
         <Image
-          className="w-24 h-24 self-end"
+          className={LOGO}
           source={require('../assets/images/smvs_logo.png')}
         />
       </TouchableOpacity>
