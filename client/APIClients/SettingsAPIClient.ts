@@ -42,7 +42,6 @@ const get = async (): Promise<SettingsUserInfoResponse[] | null> => {
     const { data } = await baseAPIClient.get(`/users?user_id=${userId}`, {
       headers: { Authorization: bearerToken },
     })
-    console.log(bearerToken)
     return data
   } catch (error) {
     return null
