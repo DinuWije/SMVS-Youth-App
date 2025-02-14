@@ -29,10 +29,8 @@ const AccountSettings = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const userId = 16
-        const response = (await SettingsAPIClient.get(
-          userId
-        )) as SettingsUserInfoResponse[]
+        const response =
+          (await SettingsAPIClient.get()) as SettingsUserInfoResponse[]
 
         if (response && response.length > 0) {
           setUserData(response[0])
@@ -55,7 +53,7 @@ const AccountSettings = () => {
     setUserData((prev) => prev && { ...prev, allowNotifs: updatedNotifs }) // Optimistically update UI
 
     try {
-      const updatedUser = await SettingsAPIClient.update(userData.id, {
+      const updatedUser = await SettingsAPIClient.update({
         entityData: { ...userData, allowNotifs: updatedNotifs },
       })
 
@@ -87,6 +85,22 @@ const AccountSettings = () => {
         'Error',
         'Failed to send password reset email. Please try again.'
       )
+    }
+  }
+
+  const handleUserLogout = async () => {
+    try {
+      const userLoggedOut = await AuthAPIClient.logout()
+
+      if (!userLoggedOut) {
+        throw new Error('Failed to logout')
+      }
+      router.push({
+        pathname: './Login',
+      })
+    } catch (error) {
+      console.error('Error loggingout:', error)
+      Alert.alert('Error', 'Failed to logout. Please try again.')
     }
   }
 
@@ -206,7 +220,10 @@ const AccountSettings = () => {
         </TouchableOpacity>
 
         {/* Logout */}
-        <TouchableOpacity className="flex-row items-center justify-between border-b border-gray-200 py-4">
+        <TouchableOpacity
+          className="flex-row items-center justify-between border-b border-gray-200 py-4"
+          onPress={handleUserLogout}
+        >
           <View className="flex-row items-center">
             <MaterialIcons name="logout" size={26} color="gray" />
             <View className="pl-4">

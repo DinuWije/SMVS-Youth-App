@@ -12,7 +12,6 @@ export const getLocalStorageObj = async <O>(localStorageKey: string) => {
       object = null
     }
   }
-
   return object
 }
 

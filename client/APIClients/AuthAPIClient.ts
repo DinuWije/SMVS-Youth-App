@@ -7,6 +7,7 @@ import AUTHENTICATED_USER_KEY from '../constants/AuthConstants'
 import { AuthenticatedUser } from '../types/AuthTypes'
 import baseAPIClient from './BaseAPIClient'
 import {
+  getLocalStorageObj,
   getLocalStorageObjProperty,
   setLocalStorageObjProperty,
 } from '../utils/LocalStorageUtils'
@@ -43,11 +44,15 @@ const loginWithGoogle = async (idToken: string): Promise<AuthenticatedUser> => {
   }
 }
 
-const logout = async (userId: string | undefined): Promise<boolean> => {
-  const bearerToken = `Bearer ${await getLocalStorageObjProperty(
-    AUTHENTICATED_USER_KEY,
-    'accessToken'
-  )}`
+const logout = async (): Promise<boolean> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+  if (userObject == null) {
+    console.log('Error getting user object')
+    return false
+  }
+
+  const bearerToken = `Bearer ${userObject!['accessToken']}`
+  const userId = userObject['id']
   try {
     await baseAPIClient.post(
       `/auth/logout/${userId}`,
@@ -81,16 +86,19 @@ const register = async (
 }
 
 const resetPassword = async (email: string | undefined): Promise<boolean> => {
-  const bearerToken = `Bearer ${await getLocalStorageObjProperty(
-    AUTHENTICATED_USER_KEY,
-    'accessToken'
-  )}`
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+  if (userObject == null) {
+    console.log('Error getting user object')
+    return false
+  }
+
+  const bearerToken = `Bearer ${userObject['accessToken']}`
   try {
     await baseAPIClient.post(
       `/auth/resetPassword/${email}`,
       {},
       {
-        // headers: { Authorization: bearerToken }
+        headers: { Authorization: bearerToken },
       }
     )
     return true

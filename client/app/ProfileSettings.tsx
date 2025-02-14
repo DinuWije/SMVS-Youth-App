@@ -60,7 +60,7 @@ const ProfileSettings = () => {
     }
 
     try {
-      const updatedUser = await SettingsAPIClient.update(parsedUserData.id, {
+      const updatedUser = await SettingsAPIClient.update({
         entityData: updatedUserData,
       })
 
