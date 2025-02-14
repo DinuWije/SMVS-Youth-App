@@ -1,7 +1,12 @@
 import React, { useEffect, useContext } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { FORM_CONTAINER, FORM_LABEL, FORM_INPUT } from '@/constants/Classes'
+import {
+  FORM_CONTAINER,
+  FORM_LABEL,
+  FORM_INPUT,
+  LOGO,
+} from '@/constants/Classes'
 import {
   TextInput,
   ActivityIndicator,
@@ -54,7 +59,7 @@ const Login = ({ navigation }) => {
     <View className={FORM_CONTAINER}>
       <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
         <Image
-          className="w-24 h-24 self-end"
+          className={LOGO}
           source={require('../assets/images/smvs_logo.png')}
         />
       </TouchableOpacity>
