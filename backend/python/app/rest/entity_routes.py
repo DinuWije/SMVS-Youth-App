@@ -65,7 +65,7 @@ def create_entity():
     return jsonify(entity_service.create_entity(body)), 201
 
 
-# defines PUT endpoint for updating thwe entity with the provided id
+# defines PUT endpoint for updating the entity with the provided id
 @blueprint.route("/<int:id>", methods=["PUT"], strict_slashes=False)
 @require_authorization_by_role({"User", "Admin"})
 @validate_request("EntityDTO")
