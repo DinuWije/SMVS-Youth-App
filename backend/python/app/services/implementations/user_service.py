@@ -31,7 +31,6 @@ class UserService(IUserService):
 
             user_dict = UserService.__user_to_dict_and_remove_unused(user)
             user_dict["email"] = firebase_user.email
-
             return UserDTO(**user_dict)
         except Exception as e:
             reason = getattr(e, "message", None)
@@ -248,7 +247,7 @@ class UserService(IUserService):
             )
             raise e
 
-        return UserDTO(user_id, user.first_name, user.last_name, user.email, user.role)
+        return UserDTO(user_id, user.first_name, user.last_name, user.email, user.role, user.phone_number, user.location, user.interests, user.allow_notifs)
 
     def delete_user_by_id(self, user_id):
         try:
@@ -409,7 +408,8 @@ class UserService(IUserService):
         user_dict = user.to_dict()
         user_dict.pop("auth_id", None)
         user_dict.pop("email_address", None)
-        user_dict.pop("phone_number", None)
-        user_dict.pop("interests", None)
-        user_dict.pop("allow_notifs", None)
+        # user_dict.pop("phone_number", None)
+        # user_dict.pop("location", None)
+        # user_dict.pop("interests", None)
+        # user_dict.pop("allow_notifs", None)
         return user_dict

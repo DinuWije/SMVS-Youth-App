@@ -1,109 +1,147 @@
-import CenteredLayout from '@/components/ui/CenteredLayout'
+import React, { useEffect, useContext } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import React from 'react'
+import {
+  FORM_CONTAINER,
+  FORM_LABEL,
+  FORM_INPUT,
+  LOGO,
+} from '@/constants/Classes'
 import {
   TextInput,
   ActivityIndicator,
   Text,
   View,
-  Button,
-  Keyboard,
+  Image,
+  TouchableOpacity,
 } from 'react-native'
+import { AuthenticatedUser } from '../types/AuthTypes'
+import AuthContext from '@/contexts/AuthContext'
+import authAPIClient from '@/APIClients/AuthAPIClient'
 
-const Login = () => {
-  const validationSchema = yup.object().shape({
-    email: yup.string().label('Email').email().required(),
-    password: yup
-      .string()
-      .label('Password')
-      .required()
-      .min(5, 'Seems a bit short...'),
-  })
-  const url = ''
+const validationSchema = yup.object().shape({
+  email: yup.string().label('Email').email().required(),
+  password: yup
+    .string()
+    .label('Password')
+    .required()
+    .min(5, 'Seems a bit short...'),
+})
 
-  async function authenticate(info) {
+const Login = ({ navigation }) => {
+  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext)
+
+  const onLogInClick = async (
+    values: { email: string; password: string },
+    { setErrors }
+  ) => {
+    const { email, password } = values
+
     try {
-      return fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify(info),
-      }).then((response) => response.json()) //response will be a json object (that has a token)
-    } catch (error) {
-      console.log(error)
+      const user: AuthenticatedUser | null = await authAPIClient.login(
+        email,
+        password
+      )
+
+      setAuthenticatedUser(user)
+    } catch (e) {
+      setErrors({ general: e.message })
     }
   }
 
+  useEffect(() => {
+    if (authenticatedUser) {
+      navigation.navigate('Feed')
+    }
+  }, [authenticatedUser, navigation])
+
   return (
-    <View>
-      <Text style={{ fontFamily: 'Poppins-Bold' }} className="text-4xl">
-        Login
+    <View className={FORM_CONTAINER}>
+      <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+        <Image
+          className={LOGO}
+          source={require('../assets/images/smvs_logo.png')}
+        />
+      </TouchableOpacity>
+      <Text
+        style={{ fontFamily: 'Poppins-Bold' }}
+        className="py-10 text-4xl self-start"
+      >
+        Log in
       </Text>
+
       <Formik
         initialValues={{ email: '', password: '' }}
-        onSubmit={(_, actions) => {
-          setTimeout(() => {
-            actions.setSubmitting(false)
-          }, 1000)
-        }}
+        onSubmit={onLogInClick}
         validationSchema={validationSchema} //validate input information based upon above schema
       >
-        {(formikProps) => (
+        {({
+          handleSubmit,
+          handleBlur,
+          handleChange,
+          values,
+          errors,
+          isSubmitting,
+          submitCount,
+        }) => (
           <React.Fragment>
-            <View>
-              <Text style={{ fontFamily: 'Inter-Regular' }}>Email address</Text>
-              <TextInput
-                placeholder="johndoe@example.com"
-                placeholderTextColor="#AAAAAA"
-                onChangeText={formikProps.handleChange('email')} //
-                onBlur={formikProps.handleBlur('email')}
-                value={formikProps.values.email.toLowerCase()}
-              />
-              <Text>
-                {formikProps.touched.email && formikProps.errors.email}
-              </Text>
-            </View>
+            <Text
+              className={FORM_LABEL}
+              style={{ fontFamily: 'Inter-Regular' }}
+            >
+              Email address
+            </Text>
+            {/* <Text>{formikProps.touched.email && formikProps.errors.email}</Text> */}
 
-            <View>
-              <Text style={{ fontFamily: 'Inter-Regular' }}>Password</Text>
-              <TextInput
-                placeholder="Password"
-                placeholderTextColor="#AAAAAA"
-                onChangeText={formikProps.handleChange('password')}
-                onBlur={formikProps.handleBlur('password')}
-                secureTextEntry
-                value={formikProps.values.password}
-              />
-              <Text style={{ color: 'red' }}>
-                {formikProps.touched.password && formikProps.errors.password}
-              </Text>
-            </View>
+            <TextInput
+              className={`${FORM_INPUT} mb-8`}
+              placeholder="johndoe@example.com"
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+              value={values.email.toLowerCase()}
+            />
 
-            {formikProps.isSubmitting ? (
+            <Text
+              className={FORM_LABEL}
+              style={{ fontFamily: 'Inter-Regular' }}
+            >
+              Password
+            </Text>
+            <TextInput
+              className={FORM_INPUT}
+              placeholder="Enter password"
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              secureTextEntry={true}
+              value={values.password}
+            />
+
+            <Text
+              style={{ fontFamily: 'Inter-Regular' }}
+              className="mt-6 text-lg self-end"
+            >
+              Forgot password?
+            </Text>
+
+            {isSubmitting ? (
               <ActivityIndicator />
             ) : (
-              <Button
-                title="Submit"
-                onPress={() => {
-                  try {
-                    authenticate(formikProps.values).then((response) => {
-                      //response is an object that has the jwt token
-                      Keyboard.dismiss()
-                      if (response.jwt) {
-                        console.log('JWT ', response.jwt)
-                      } else if (response.error) {
-                        alert(response.error)
-                      } else {
-                        alert('Unknown Error')
-                      }
-                    })
-                  } catch (err) {
-                    console.log(err)
-                  }
-                }}
-              />
+              <TouchableOpacity
+                className="justify-center items-center mt-20 mb-5 h-20 items-center bg-black rounded-xl p-5 w-full"
+                onPress={() => handleSubmit()}
+              >
+                <Text className="text-2xl font-bold text-white">Log in</Text>
+              </TouchableOpacity>
+            )}
+
+            {submitCount > 0 && Object.keys(errors).length > 0 && (
+              <View className="mb-2">
+                {Object.values(errors).map((error, index) => (
+                  <Text key={index} className="text-red-500 text-s">
+                    {error}
+                  </Text>
+                ))}
+              </View>
             )}
           </React.Fragment>
         )}

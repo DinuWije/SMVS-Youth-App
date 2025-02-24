@@ -72,7 +72,7 @@ def get_users():
         else:
             try:
                 user = user_service.get_user_by_id(user_id)
-                return jsonify(user.__dict__), 200
+                return jsonify([user.__dict__]), 200
             except Exception as e:
                 error_message = getattr(e, "message", None)
                 return (
@@ -86,7 +86,7 @@ def get_users():
         else:
             try:
                 user = user_service.get_user_by_email(email)
-                return jsonify(user.__dict__), 200
+                return jsonify([user.__dict__]), 200
             except Exception as e:
                 error_message = getattr(e, "message", None)
                 return (

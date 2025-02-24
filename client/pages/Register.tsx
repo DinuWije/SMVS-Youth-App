@@ -1,152 +1,184 @@
-import CenteredLayout from '@/components/ui/CenteredLayout'
-import React from 'react'
-import { View, TextInput, Keyboard, Text, Button } from 'react-native'
+import React, { useContext, useEffect } from 'react'
+import { View, TextInput, Image, Text, TouchableOpacity } from 'react-native'
+import {
+  FORM_CONTAINER,
+  FORM_LABEL,
+  FORM_INPUT,
+  LOGO,
+} from '@/constants/Classes'
+import authAPIClient from '@/APIClients/AuthAPIClient'
+import AuthContext from '@/contexts/AuthContext'
+import { AuthenticatedUser } from '@/types/AuthTypes'
 import { Formik } from 'formik'
 import { ActivityIndicator } from 'react-native'
 import * as yup from 'yup'
 
-const Register = () => {
-  const url = ''
-  const validationSchema = yup.object().shape({
-    name: yup.string().label('Name').required(),
-    email: yup.string().label('Email').email().required(),
-    password: yup
-      .string()
-      .label('Password')
-      .required()
-      .min(8, 'Too short, must be a minimum of eight characters'),
-    confirmPassword: yup
-      .string()
-      .label('Confirm Password')
-      .required()
-      .test(
-        'check-confirmpassword',
-        "Password doesn't match",
-        function (value) {
-          return this.parent.password === value
-        }
-      ),
-  })
+const validationSchema = yup.object().shape({
+  firstName: yup.string().label('First Name').required(),
+  lastName: yup.string().label('Last Name').required(),
+  email: yup.string().label('Email').email().required(),
+  password: yup
+    .string()
+    .label('Password')
+    .required()
+    .min(6, 'Too short, must be a minimum of six characters'),
+  confirmPassword: yup
+    .string()
+    .label('Confirm Password')
+    .required()
+    .test('check-confirmpassword', "Password doesn't match", function (value) {
+      return this.parent.password === value
+    }),
+})
 
-  async function register(info) {
+const Register = ({ navigation }) => {
+  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext)
+
+  const onSignupClick = async (values: any, { setErrors }) => {
+    const { firstName, lastName, email, password } = values
+
     try {
-      return fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify(info),
-      }).then((response) => response.json())
-    } catch (error) {
-      console.log(error)
+      const user: AuthenticatedUser = await authAPIClient.register(
+        firstName,
+        lastName,
+        email,
+        password
+      )
+      setAuthenticatedUser(user)
+    } catch (err) {
+      setErrors({ general: err.message })
     }
   }
 
+  useEffect(() => {
+    if (authenticatedUser) {
+      navigation.navigate('Interests')
+    }
+  }, [authenticatedUser, navigation])
+
   return (
-    <CenteredLayout>
-      <Text>Registration</Text>
+    <View className={FORM_CONTAINER}>
+      <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+        <Image
+          className={LOGO}
+          source={require('../assets/images/smvs_logo.png')}
+        />
+      </TouchableOpacity>
+      <Text
+        style={{ fontFamily: 'Poppins-Bold' }}
+        className="py-10 text-4xl self-start"
+      >
+        Sign up
+      </Text>
+
       <Formik
         initialValues={{
-          username: '',
+          firstName: '',
+          lastName: '',
           email: '',
           password: '',
           confirmPassword: '',
         }}
-        onSubmit={(_, actions) => {
-          setTimeout(() => {
-            actions.setSubmitting(false)
-          }, 1000)
-        }}
+        onSubmit={onSignupClick}
         validationSchema={validationSchema}
       >
-        {(formikProps) => (
+        {({
+          handleSubmit,
+          handleChange,
+          isSubmitting,
+          handleBlur,
+          errors,
+          values,
+          submitCount,
+        }) => (
           <React.Fragment>
-            <View>
-              <Text>Name</Text>
-              <TextInput
-                placeholder="John Doe"
-                placeholderTextColor="#AAAAAA"
-                onChangeText={formikProps.handleChange('username')}
-                onBlur={formikProps.handleBlur('username')}
-                value={formikProps.values.username}
-              />
-              <Text style={{ color: 'red' }}>
-                {formikProps.touched.username && formikProps.errors.username}
-              </Text>
-            </View>
+            <Text
+              className={FORM_LABEL}
+              style={{ fontFamily: 'Inter-Regular' }}
+            >
+              First Name
+            </Text>
+            <TextInput
+              className={`${FORM_INPUT} mb-8`}
+              placeholder="John Doe"
+              placeholderTextColor="#AAAAAA"
+              onChangeText={handleChange('firstName')}
+              onBlur={handleBlur('firstName')}
+              value={values.firstName}
+            />
 
-            <View>
-              <Text>Email</Text>
-              <TextInput
-                placeholder="johndoe@example.com"
-                placeholderTextColor="#AAAAAA"
-                onChangeText={formikProps.handleChange('email')}
-                onBlur={formikProps.handleBlur('email')}
-                value={formikProps.values.email.toLowerCase()}
-              />
-              <Text style={{ color: 'red' }}>
-                {formikProps.touched.email && formikProps.errors.email}
-              </Text>
-            </View>
+            <Text
+              className={FORM_LABEL}
+              style={{ fontFamily: 'Inter-Regular' }}
+            >
+              Last Name
+            </Text>
+            <TextInput
+              className={`${FORM_INPUT} mb-8`}
+              placeholder="John Doe"
+              placeholderTextColor="#AAAAAA"
+              onChangeText={handleChange('lastName')}
+              onBlur={handleBlur('lastName')}
+              value={values.lastName}
+            />
 
-            <View>
-              <Text>Password</Text>
-              <TextInput
-                placeholder="Password"
-                placeholderTextColor="#AAAAAA"
-                onChangeText={formikProps.handleChange('password')}
-                onBlur={formikProps.handleBlur('password')}
-                secureTextEntry
-                value={formikProps.values.password}
-              />
-              <Text style={{ color: 'red' }}>
-                {formikProps.touched.password && formikProps.errors.password}
-              </Text>
-            </View>
+            <Text className={FORM_LABEL}>Email</Text>
+            <TextInput
+              className={`${FORM_INPUT} mb-8`}
+              placeholder="johndoe@example.com"
+              placeholderTextColor="#AAAAAA"
+              onChangeText={handleChange('email')}
+              onBlur={handleBlur('email')}
+              value={values.email.toLowerCase()}
+            />
 
-            <View>
-              <Text>Confirm Password</Text>
-              <TextInput
-                placeholder="Password"
-                placeholderTextColor="#AAAAAA"
-                onChangeText={formikProps.handleChange('confirmPassword')}
-                onBlur={formikProps.handleBlur('confirmPassword')}
-                secureTextEntry
-              />
-              <Text style={{ color: 'red' }}>
-                {formikProps.touched.confirmPassword &&
-                  formikProps.errors.confirmPassword}
-              </Text>
-              {formikProps.isSubmitting ? (
-                <ActivityIndicator />
-              ) : (
-                <View>
-                  <Button
-                    title="Register"
-                    onPress={() => {
-                      try {
-                        register(formikProps.values).then((response) => {
-                          Keyboard.dismiss()
-                          if (response.jwt) {
-                            console.log('JWT')
-                          } else if (response.error) {
-                            alert(response.error)
-                          } else {
-                            alert('Unknown Registration Error')
-                          }
-                        })
-                      } catch (err) {
-                        console.log(err)
-                      }
-                    }}
-                  />
-                </View>
-              )}
-            </View>
+            <Text className={FORM_LABEL}>Password</Text>
+            <TextInput
+              className={`${FORM_INPUT} mb-8`}
+              placeholder="Password"
+              placeholderTextColor="#AAAAAA"
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              secureTextEntry
+              value={values.password}
+            />
+
+            <Text className={FORM_LABEL}>Confirm Password</Text>
+            <TextInput
+              className={FORM_INPUT}
+              placeholder="Password"
+              placeholderTextColor="#AAAAAA"
+              onChangeText={handleChange('confirmPassword')}
+              onBlur={handleBlur('confirmPassword')}
+              secureTextEntry
+            />
+
+            {isSubmitting ? (
+              <ActivityIndicator />
+            ) : (
+              <TouchableOpacity
+                className="justify-center items-center mt-12 mb-5 h-20 items-center bg-black rounded-xl p-5 w-full"
+                onPress={() => {
+                  handleSubmit()
+                }}
+              >
+                <Text className="text-2xl font-bold text-white">Sign up</Text>
+              </TouchableOpacity>
+            )}
+
+            {submitCount > 0 && Object.keys(errors).length > 0 && (
+              <View className="mb-2">
+                {Object.values(errors).map((error, index) => (
+                  <Text key={index} className="text-red-500 text-s">
+                    {error}
+                  </Text>
+                ))}
+              </View>
+            )}
           </React.Fragment>
         )}
       </Formik>
-    </CenteredLayout>
+    </View>
   )
 }
 

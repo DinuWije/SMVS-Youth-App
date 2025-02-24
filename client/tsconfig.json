@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": false, // Disable the rule that prevents implicit 'any'
+		"jsx": "react-jsx",
     "paths": {
       "@/*": [
         "./*"
