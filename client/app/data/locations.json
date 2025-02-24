@@ -1,3 +1,13 @@
 {
-  "locations": ["New York", "Los Angeles", "Chicago", "Houston", "Toronto"]
+  "locations": [
+    "Atlanta",
+    "Boston",
+    "Cherry Hill",
+    "Chicago",
+    "Edison",
+    "Jersey City",
+    "San Francisco",
+    "Toronto",
+    "United Kingdom"
+  ]
 }
