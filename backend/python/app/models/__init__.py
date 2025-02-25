@@ -11,6 +11,8 @@ def init_app(app):
     from .user import User
     from .feed import Feed
     from .user_comment import UserComment
+    from .article import Article
+    from .content import Content
     
     app.app_context().push()
     db.init_app(app)
