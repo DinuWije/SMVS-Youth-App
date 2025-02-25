@@ -1,68 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
-// import { useLocalSearchParams, useRouter } from 'expo-router';
-// import { Ionicons } from '@expo/vector-icons';
-// import FeedAPIClient, { FeedResponse } from '@/APIClients/FeedAPIClient';
-
-// const FeedDetails = () => {
-//   const router = useRouter();
-//   const { id } = useLocalSearchParams();
-//   const [post, setPost] = useState<FeedResponse | null>(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchPost = async () => {
-//       if (!id) return;
-//       const feedData = await FeedAPIClient.getById(id.toString()); // Fetch post by ID
-//       if (feedData) {
-//         setPost(feedData);
-//       }
-//       setLoading(false);
-//     };
-
-//     fetchPost();
-//   }, [id]);
-
-//   if (loading) {
-//     return (
-//       <View className="flex-1 justify-center items-center">
-//         <ActivityIndicator size="large" />
-//         <Text>Loading post...</Text>
-//       </View>
-//     );
-//   }
-
-//   if (!post) {
-//     return (
-//       <View className="flex-1 justify-center items-center">
-//         <Text className="text-gray-500 text-lg">Post not found.</Text>
-//       </View>
-//     );
-//   }
-
-//   return (
-//     <ScrollView className="flex-1 bg-white p-6">
-//       {/* Back Button */}
-//       <TouchableOpacity onPress={() => router.back()} className="mb-4">
-//         <Ionicons name="arrow-back" size={28} color="black" />
-//       </TouchableOpacity>
-
-//       {/* Post Title */}
-//       <Text className="text-3xl font-bold text-black">{post.title}</Text>
-//       <Text className="text-gray-500 mt-1">{new Date(post.created_at).toLocaleDateString('en-US', {
-//         month: 'short',
-//         day: 'numeric',
-//       })} • {post.centre}</Text>
-
-//       {/* Post Content */}
-//       <Text className="text-lg text-black mt-4">{post.content}</Text>
-//     </ScrollView>
-//   );
-// };
-
-// export default FeedDetails;
-
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -112,15 +47,29 @@ const FeedDetails = () => {
   }
 
   // Format the post date
-  const formattedDate = new Date(post.created_at).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-  
+  const formattedDate = post.createdAt
+    ? new Date(Date.parse(post.createdAt)).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+      })
+    : 'Unknown Date1'; // Fallback if parsing fails
 
-  // Get author initials for avatar
-  const userInitial = post.author_id ? post.author_id.toString().charAt(0).toUpperCase() : '?';
-  const avatarColor = 'bg-blue-300'; // You can update this dynamically
+  // Function to generate a color based on the author's name
+  const getUserColor = (name: string): string => {
+    const colors = [
+      'bg-red-300', 'bg-green-300', 'bg-blue-300',
+      'bg-yellow-300', 'bg-purple-300', 'bg-pink-300',
+      'bg-indigo-300', 'bg-teal-300', 'bg-orange-300',
+    ];
+
+    // Hash the name and get a consistent color index
+    const charCode = name.charCodeAt(0);
+    return colors[charCode % colors.length];
+  };
+
+  // Assign the user's first letter and color dynamically
+  const userInitial = post.author_name ? post.author_name.charAt(0).toUpperCase() : '?';
+  const avatarColor = getUserColor(post.author_name || 'Unknown');
 
   return (
     <View className="flex-1 bg-white">
@@ -141,7 +90,7 @@ const FeedDetails = () => {
             <View className={`w-10 h-10 rounded-full ${avatarColor} flex items-center justify-center`}>
               <Text className="text-white font-bold">{userInitial}</Text>
             </View>
-            <Text className="text-lg font-semibold">Author {post.author_id}</Text>
+            <Text className="text-lg font-semibold">{post.author_name}</Text>
           </View>
           <Text className="text-gray-500">{formattedDate} • {post.centre}</Text>
         </View>
@@ -159,7 +108,7 @@ const FeedDetails = () => {
 
           {/* Like Button (Toggles Heart Color) */}
           <TouchableOpacity onPress={toggleLike}>
-            <FontAwesome name={liked ? "heart" : "heart-o"} size={22} color={liked ? "red" : "black"} />
+            <FontAwesome name={liked ? 'heart' : 'heart-o'} size={22} color={liked ? 'red' : 'black'} />
           </TouchableOpacity>
 
           <TouchableOpacity>
