@@ -136,3 +136,16 @@ class IUserService(ABC):
         :raises Exception: if user deletion fails
         """
         pass
+
+    @abstractmethod
+    def email_all_users(self, subject, body):
+        """
+        Email all users of the platform who have email notifications enabled
+
+        :param str subject: subject of email
+        :type subject: str
+        :param str body: HTML body of email
+        :type body: str
+        :raises Exception: if user deletion fails
+        """
+        pass
