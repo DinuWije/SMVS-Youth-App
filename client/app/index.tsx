@@ -11,6 +11,7 @@ import ProfileSettings from '@/app/ProfileSettings'
 import ChangePassword from './ChangePassword'
 import AuthProvider from '@/contexts/AuthProvider'
 import Interests from '@/pages/Interests'
+import CreateNotification from './CreateNotification'
 
 const Stack = createStackNavigator()
 
@@ -39,6 +40,7 @@ const App = () => {
         <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="Interests" component={Interests} />
+        <Stack.Screen name="CreateNotification" component={CreateNotification} />
       </Stack.Navigator>
     </AuthProvider>
   )

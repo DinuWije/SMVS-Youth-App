@@ -11,7 +11,7 @@ class UserService(IUserService):
     UserService implementation with user management methods
     """
 
-    def __init__(self, logger):
+    def __init__(self, logger, email_service):
         """
         Create an instance of UserService
 
@@ -19,6 +19,7 @@ class UserService(IUserService):
         :type logger: logger
         """
         self.logger = logger
+        self.email_service = email_service
 
     def get_user_by_id(self, user_id):
         try:
@@ -413,3 +414,20 @@ class UserService(IUserService):
         # user_dict.pop("interests", None)
         # user_dict.pop("allow_notifs", None)
         return user_dict
+    
+
+    def email_all_users(self, subject, body):
+        users_with_notifs = User.query.filter_by(allow_notifs=True).all()
+        email_list = [user.email_address for user in users_with_notifs]
+        for email in email_list:
+            try:
+                self.email_service.send_email(email, subject, body)
+            except Exception as e:
+                self.logger.error(
+                    "Failed to send email to user with email {email}".format(
+                        email=email
+                    )
+                )
+                raise e
+
+        return

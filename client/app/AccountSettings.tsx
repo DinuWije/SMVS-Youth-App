@@ -191,10 +191,10 @@ const AccountSettings = () => {
             <Ionicons name="notifications-outline" size={26} color="gray" />
             <View className="pl-4">
               <Text className="text-base font-semibold text-black">
-                Push Notifications
+                Email Notifications
               </Text>
               <Text className="text-sm text-gray-500">
-                Stay up to date with push notifications
+                Stay up to date with email notifications
               </Text>
             </View>
           </View>
@@ -212,15 +212,23 @@ const AccountSettings = () => {
         <Text className="text-lg font-semibold text-gray-700 mt-8">MORE</Text>
 
         {/* Rate Us */}
-        <TouchableOpacity className="flex-row items-center justify-between border-b border-gray-200 py-4">
+        <TouchableOpacity
+          className="flex-row items-center justify-between border-b border-gray-200 py-4"
+          onPress={() =>
+            router.push({
+              pathname: './CreateNotification',
+              params: { userData: JSON.stringify(userData) },
+            })
+          }
+        >
           <View className="flex-row items-center">
-            <Ionicons name="star-outline" size={26} color="gray" />
+            <Ionicons name="mail-open-outline" size={26} color="gray" />
             <View className="pl-4">
               <Text className="text-base font-semibold text-black">
-                Rate Us
+                Create Email Notification
               </Text>
               <Text className="text-sm text-gray-500">
-                Rate us on the Play Store or App Store
+                Sends an email to all users
               </Text>
             </View>
           </View>
