@@ -32,3 +32,7 @@ class IFeedService(ABC):
     @abstractmethod
     def increment_view_count(self, feed_id):
         pass
+
+    @abstractmethod
+    def remove_like(self, feed_id, user_id):
+        pass

@@ -103,7 +103,7 @@ def delete_feed(feed_id):
     """
     Delete a feed post by ID
     """
-    
+    console.log("deleting?")
     try:
         deleted_id = feed_service.delete_entity(feed_id)
         return jsonify({"message": f"Feed post {deleted_id} deleted successfully"}), 200
@@ -155,6 +155,20 @@ def increment_view(feed_id):
     """
     try:
         updated_feed = feed_service.increment_view_count(feed_id)
+        return jsonify(updated_feed), 200
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": error_message if error_message else str(e)}), 500
+
+@blueprint.route("/<int:feed_id>/unlike", methods=["POST"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def remove_like(feed_id):
+    """
+    Remove a like from a feed post.
+    """
+    try:
+        user_id = request.json.get("user_id")
+        updated_feed = feed_service.remove_like(feed_id, user_id)
         return jsonify(updated_feed), 200
     except Exception as e:
         error_message = getattr(e, "message", None)

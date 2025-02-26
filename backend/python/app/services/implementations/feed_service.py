@@ -65,18 +65,28 @@ class FeedService(IFeedService):
         raise Exception("Invalid id")
 
     def add_like(self, feed_id, user_id):
-        """Increment likes_count and update users_who_have_liked."""
         feed = Feed.query.get(feed_id)
         if not feed:
             raise Exception("Invalid feed ID")
 
+        # Ensure users_who_have_liked is initialized
+        if not isinstance(feed.users_who_have_liked, list):
+            feed.users_who_have_liked = []
+
+        # Check if user already liked the post
         if user_id in feed.users_who_have_liked:
             raise Exception("User has already liked this post")
 
+        # Increment likes_count
         feed.likes_count += 1
-        feed.users_who_have_liked.append(user_id)
 
+        # Add user_id and ensure it's saved properly
+        feed.users_who_have_liked = list(set(feed.users_who_have_liked + [user_id]))
+
+        # Commit changes to the database
+        
         db.session.commit()
+
         return feed.to_dict()
 
     def add_comment(self, feed_id, user_id, content, parent_id=None):
@@ -108,3 +118,25 @@ class FeedService(IFeedService):
 
         db.session.commit()
         return feed.to_dict()
+    
+    def remove_like(self, feed_id, user_id):
+        """Remove a like from a feed post."""
+        feed = Feed.query.get(feed_id)
+        if not feed:
+            raise Exception("Invalid feed ID")
+        
+        # Ensure users_who_have_liked is a list
+        if not isinstance(feed.users_who_have_liked, list):
+            feed.users_who_have_liked = []
+        
+        # Check if the user has liked the post
+        if user_id not in feed.users_who_have_liked:
+            raise Exception("User has not liked this post")
+        
+        # Filter out the user and decrement likes_count
+        feed.users_who_have_liked = [uid for uid in feed.users_who_have_liked if uid != user_id]
+        feed.likes_count = max(0, feed.likes_count - 1)
+        
+        db.session.commit()
+        return feed.to_dict()
+

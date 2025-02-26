@@ -47,93 +47,155 @@ const create = async (feedData: CreateFeedRequest): Promise<FeedResponse | null>
 };
 
 const getAll = async (): Promise<(FeedResponse & { author_name?: string })[] | null> => {
-    const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
-    if (!userObject || !userObject['accessToken']) {
-      console.log('Error: User not authenticated.');
-      return null;
-    }
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
+  if (!userObject || !userObject['accessToken']) {
+    console.log('Error: User not authenticated.');
+    return null;
+  }
+
+  const bearerToken = `Bearer ${userObject['accessToken']}`;
   
-    const bearerToken = `Bearer ${userObject['accessToken']}`;
-    
-    try {
-      // Fetch all feed posts
-      const { data: posts } = await baseAPIClient.get('/feeds', {
-        headers: { Authorization: bearerToken },
-      });
+  try {
+    // Fetch all feed posts
+    const { data: posts } = await baseAPIClient.get('/feeds', {
+      headers: { Authorization: bearerToken },
+    });
 
-      // Fetch all users (to resolve author_id to their name)
-      const { data: users } = await baseAPIClient.get('/users', {
-        headers: { Authorization: bearerToken },
-      });
+    // Fetch all users (to resolve author_id to their name)
+    const { data: users } = await baseAPIClient.get('/users', {
+      headers: { Authorization: bearerToken },
+    });
 
-      // Create a mapping of userId -> firstName
-      const userMap: Record<number, string> = {};
-      users.forEach((user: { id: number; firstName: string }) => {
-        userMap[user.id] = user.firstName;
-      });
+    // Create a mapping of userId -> firstName
+    const userMap: Record<number, string> = {};
+    users.forEach((user: { id: number; firstName: string }) => {
+      userMap[user.id] = user.firstName;
+    });
 
-      // Attach author's first name to each post
-      const postsWithAuthorNames = posts.map((post: FeedResponse) => ({
-        ...post,
-        author_name: userMap[post.authorId] || "Unknown",
-      }));
+    // Attach author's first name to each post
+    const postsWithAuthorNames = posts.map((post: FeedResponse) => ({
+      ...post,
+      author_name: userMap[post.authorId] || "Unknown",
+    }));
 
-      return postsWithAuthorNames;
-    } catch (error) {
-      console.error('Error fetching feeds:', error);
-      return null;
-    }
+    return postsWithAuthorNames;
+  } catch (error) {
+    console.error('Error fetching feeds:', error);
+    return null;
+  }
 };
 
-  
-  const getById = async (id: string): Promise<FeedResponse & { author_name?: string } | null> => {
-    const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
-    if (!userObject || !userObject['accessToken']) {
-      console.log('Error: User not authenticated.');
-      return null;
-    }
-  
-    const bearerToken = `Bearer ${userObject['accessToken']}`;
-  
-    try {
-      // Fetch the post by ID
-      const { data: postData } = await baseAPIClient.get(`/feeds/${id}`, {
-        headers: { Authorization: bearerToken },
-      });
+const getById = async (id: string): Promise<FeedResponse & { author_name?: string } | null> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
+  if (!userObject || !userObject['accessToken']) {
+    console.log('Error: User not authenticated.');
+    return null;
+  }
 
-      console.log("Fetched Post Data:", postData);
+  const bearerToken = `Bearer ${userObject['accessToken']}`;
 
-      if (!postData.authorId) {
-        console.warn("Error: Author ID is missing in post data.");
-        return {
-          ...postData,
-          created_at: postData.createdAt || "Missing Created At",
-          author_name: "Unknown",
-        };
-      }
+  try {
+    // Fetch the post by ID
+    const { data: postData } = await baseAPIClient.get(`/feeds/${id}`, {
+      headers: { Authorization: bearerToken },
+    });
 
-      // Fetch all users (since API doesn't return just one)
-      const { data: allUsers } = await baseAPIClient.get(`/users`, {
-        headers: { Authorization: bearerToken },
-      });
+    console.log("Fetched Post Data:", postData);
 
-      console.log("Fetched Author Data:", allUsers);
-
-      // Find the user that matches the authorId
-      const authorData = allUsers.find((user: any) => user.id === postData.authorId);
-
+    if (!postData.authorId) {
+      console.warn("Error: Author ID is missing in post data.");
       return {
         ...postData,
         created_at: postData.createdAt || "Missing Created At",
-        author_name: authorData?.firstName || "Unknown",
+        author_name: "Unknown",
       };
-    } catch (error) {
-      console.error(`Error fetching feed with ID ${id}:`, error);
-      return null;
     }
-  };
 
+    // Fetch all users (since API doesn't return just one)
+    const { data: allUsers } = await baseAPIClient.get(`/users`, {
+      headers: { Authorization: bearerToken },
+    });
 
-  
-export default { create, getAll, getById };
+    console.log("Fetched Author Data:", allUsers);
 
+    // Find the user that matches the authorId
+    const authorData = allUsers.find((user: any) => user.id === postData.authorId);
+
+    return {
+      ...postData,
+      created_at: postData.createdAt || "Missing Created At",
+      author_name: authorData?.firstName || "Unknown",
+    };
+  } catch (error) {
+    console.error(`Error fetching feed with ID ${id}:`, error);
+    return null;
+  }
+};
+
+// ** Add like to a post **
+const likePost = async (postId: number, userId: number): Promise<boolean> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
+  if (!userObject || !userObject['accessToken']) {
+    console.error("Error: User not authenticated.");
+    return false;
+  }
+
+  const bearerToken = `Bearer ${userObject['accessToken']}`;
+
+  try {
+    await baseAPIClient.post(`/feeds/${postId}/like`, { user_id: userId }, {
+      headers: { Authorization: bearerToken },
+    });
+
+    console.log(`Successfully liked post ${postId}`);
+    return true;
+  } catch (error) {
+    console.error(`Error liking post ${postId}:`, error);
+    return false;
+  }
+};
+
+// export default { create, getAll, getById, likePost };
+
+const unlikePost = async (postId: number, userId: number): Promise<boolean> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
+  if (!userObject || !userObject['accessToken']) {
+    console.error("Error: User not authenticated.");
+    return false;
+  }
+
+  const bearerToken = `Bearer ${userObject['accessToken']}`;
+
+  try {
+    // Assuming your API supports unliking via a POST request to /feeds/{postId}/unlike
+    await baseAPIClient.post(`/feeds/${postId}/unlike`, { user_id: userId }, {
+      headers: { Authorization: bearerToken },
+    });
+    console.log(`Successfully unliked post ${postId}`);
+    return true;
+  } catch (error) {
+    console.error(`Error unliking post ${postId}:`, error);
+    return false;
+  }
+};
+
+const deletePost = async (postId: number): Promise<boolean> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
+  if (!userObject || !userObject['accessToken']) {
+    console.error("Error: User not authenticated.");
+    return false;
+  }
+  const bearerToken = `Bearer ${userObject['accessToken']}`;
+  try {
+    await baseAPIClient.delete(`/feeds/${postId}`, {
+      headers: { Authorization: bearerToken },
+    });
+    console.log(`Successfully deleted post ${postId}`);
+    return true;
+  } catch (error) {
+    console.error(`Error deleting post ${postId}:`, error);
+    return false;
+  }
+};
+
+export default { create, getAll, getById, likePost, unlikePost, deletePost };
