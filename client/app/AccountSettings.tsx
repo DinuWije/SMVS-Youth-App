@@ -211,29 +211,31 @@ const AccountSettings = () => {
         {/* More Section */}
         <Text className="text-lg font-semibold text-gray-700 mt-8">MORE</Text>
 
-        {/* Rate Us */}
-        <TouchableOpacity
-          className="flex-row items-center justify-between border-b border-gray-200 py-4"
-          onPress={() =>
-            router.push({
-              pathname: './CreateNotification',
-              params: { userData: JSON.stringify(userData) },
-            })
-          }
-        >
-          <View className="flex-row items-center">
-            <Ionicons name="mail-open-outline" size={26} color="gray" />
-            <View className="pl-4">
-              <Text className="text-base font-semibold text-black">
-                Create Email Notification
-              </Text>
-              <Text className="text-sm text-gray-500">
-                Sends an email to all users
-              </Text>
+        {/* Create Email Notification (Only for Admins) */}
+        {userData?.role === 'Admin' && (
+          <TouchableOpacity
+            className="flex-row items-center justify-between border-b border-gray-200 py-4"
+            onPress={() =>
+              router.push({
+                pathname: './CreateNotification',
+                params: { userData: JSON.stringify(userData) },
+              })
+            }
+          >
+            <View className="flex-row items-center">
+              <Ionicons name="mail-open-outline" size={26} color="gray" />
+              <View className="pl-4">
+                <Text className="text-base font-semibold text-black">
+                  Create Email Notification
+                </Text>
+                <Text className="text-sm text-gray-500">
+                  Sends an email to all users
+                </Text>
+              </View>
             </View>
-          </View>
-          <Ionicons name="chevron-forward-outline" size={20} color="gray" />
-        </TouchableOpacity>
+            <Ionicons name="chevron-forward-outline" size={20} color="gray" />
+          </TouchableOpacity>
+        )}
 
         {/* Logout */}
         <TouchableOpacity
