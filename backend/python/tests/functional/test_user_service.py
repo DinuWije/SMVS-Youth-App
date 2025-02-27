@@ -24,7 +24,7 @@ def setup(module_mocker):
 
 @pytest.fixture
 def user_service():
-    user_service = UserService(current_app.logger)
+    user_service = UserService(current_app.logger, None)
     yield user_service
     User.query.delete()
 

@@ -1,14 +1,17 @@
 import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
+import { useRouter } from 'expo-router'
 
-const Welcome = ({ navigation }) => {
+const Welcome = () => {
+  const router = useRouter()
+
   return (
     <View className="flex-1 bg-white">
       <View className="flex-1 justify-center items-center">
         <Image source={require('../assets/images/smvs_logo.png')} />
       </View>
 
-      <View className="flex-1 justify-center">
+      <View className="flex-1 mb-16 justify-center">
         <View className="my-12 items-center">
           <Text
             style={{ fontFamily: 'Poppins-Bold' }}
@@ -27,14 +30,14 @@ const Welcome = ({ navigation }) => {
         <View className="items-center">
           <TouchableOpacity
             className="bg-black rounded-lg my-2 p-5 w-[90%]"
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => router.push('./Login')}
           >
-            <Text className="font-bold text-center text-white">Login</Text>
+            <Text className="font-bold text-center text-white">Log In</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             className="bg-white rounded-lg my-2 p-5 w-[90%] border-black border"
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => router.push('./Register')}
           >
             <Text className="font-bold text-center text-black">
               Create Account

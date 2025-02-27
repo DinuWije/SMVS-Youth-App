@@ -13,7 +13,6 @@ from ..services.implementations.email_service import EmailService
 from ..services.implementations.user_service import UserService
 
 
-user_service = UserService(current_app.logger)
 email_service = EmailService(
     current_app.logger,
     {
@@ -26,6 +25,7 @@ email_service = EmailService(
     os.getenv("MAILER_USER"),
     "SMVS Youth App",  # must replace
 )
+user_service = UserService(current_app.logger, email_service)
 auth_service = AuthService(current_app.logger, user_service, email_service)
 
 cookie_options = {
@@ -58,6 +58,7 @@ def login():
                 "last_name": auth_dto.last_name,
                 "email": auth_dto.email,
                 "role": auth_dto.role,
+                "location": auth_dto.location,
             }
         )
         response.set_cookie(
