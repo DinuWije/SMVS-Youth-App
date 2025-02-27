@@ -1,6 +1,11 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { View, TextInput, Image, Text, TouchableOpacity } from 'react-native'
-import { FORM_CONTAINER, FORM_LABEL, FORM_INPUT } from '@/constants/Classes'
+import {
+  FORM_CONTAINER,
+  FORM_LABEL,
+  FORM_INPUT,
+  LOGO,
+} from '@/constants/Classes'
 import authAPIClient from '@/APIClients/AuthAPIClient'
 import AuthContext from '@/contexts/AuthContext'
 import { AuthenticatedUser } from '@/types/AuthTypes'
@@ -31,29 +36,31 @@ const Register = ({ navigation }) => {
 
   const onSignupClick = async (values: any, { setErrors }) => {
     const { firstName, lastName, email, password } = values
-    const user: AuthenticatedUser | null = await authAPIClient.register(
-      firstName,
-      lastName,
-      email,
-      password
-    )
-    if (user == null) {
-      setErrors({ general: 'System error.' })
-    } else {
+
+    try {
+      const user: AuthenticatedUser = await authAPIClient.register(
+        firstName,
+        lastName,
+        email,
+        password
+      )
       setAuthenticatedUser(user)
-      navigation.navigate('Feed')
+    } catch (err) {
+      setErrors({ general: err.message })
     }
   }
 
-  if (authenticatedUser) {
-    navigation.navigate('Feed')
-  }
+  useEffect(() => {
+    if (authenticatedUser) {
+      navigation.navigate('Interests')
+    }
+  }, [authenticatedUser, navigation])
 
   return (
     <View className={FORM_CONTAINER}>
       <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
         <Image
-          className="w-24 h-24 self-end"
+          className={LOGO}
           source={require('../assets/images/smvs_logo.png')}
         />
       </TouchableOpacity>
@@ -81,7 +88,6 @@ const Register = ({ navigation }) => {
           isSubmitting,
           handleBlur,
           errors,
-          isValid,
           values,
           submitCount,
         }) => (
@@ -155,7 +161,6 @@ const Register = ({ navigation }) => {
                 onPress={() => {
                   handleSubmit()
                 }}
-                disabled={!isValid}
               >
                 <Text className="text-2xl font-bold text-white">Sign up</Text>
               </TouchableOpacity>

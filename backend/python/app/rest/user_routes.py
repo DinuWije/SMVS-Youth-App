@@ -6,13 +6,13 @@ from ..middlewares.auth import require_authorization_by_role
 from ..middlewares.validate import validate_request
 from ..resources.create_user_dto import CreateUserDTO
 from ..resources.update_user_dto import UpdateUserDTO
+from ..resources.email_users_dto import EmailUsersDTO
 from ..services.implementations.auth_service import AuthService
 from ..services.implementations.email_service import EmailService
 from ..services.implementations.user_service import UserService
 from ..utilities.csv_utils import generate_csv_from_list
 
 
-user_service = UserService(current_app.logger)
 email_service = EmailService(
     current_app.logger,
     {
@@ -22,8 +22,9 @@ email_service = EmailService(
         "client_secret": os.getenv("MAILER_CLIENT_SECRET"),
     },
     os.getenv("MAILER_USER"),
-    "Display Name",  # must replace
+    "SMVS Youth App",  # must replace
 )
+user_service = UserService(current_app.logger, email_service)
 auth_service = AuthService(current_app.logger, user_service, email_service)
 blueprint = Blueprint("users", __name__, url_prefix="/users")
 
@@ -72,7 +73,7 @@ def get_users():
         else:
             try:
                 user = user_service.get_user_by_id(user_id)
-                return jsonify(user.__dict__), 200
+                return jsonify([user.__dict__]), 200
             except Exception as e:
                 error_message = getattr(e, "message", None)
                 return (
@@ -86,7 +87,7 @@ def get_users():
         else:
             try:
                 user = user_service.get_user_by_email(email)
-                return jsonify(user.__dict__), 200
+                return jsonify([user.__dict__]), 200
             except Exception as e:
                 error_message = getattr(e, "message", None)
                 return (
@@ -172,3 +173,19 @@ def delete_user():
         jsonify({"error": "Must supply one of user_id or email as query parameter."}),
         400,
     )
+
+
+@blueprint.route("/send_email_notifs", methods=["POST"], strict_slashes=False)
+@require_authorization_by_role("Admin")
+# @validate_request("EmailUsersDTO")
+def send_email_notifs():
+    """
+    Email all users with notifs_enabled=True with a notification
+    """
+    try:
+        email_info = EmailUsersDTO(**request.json)
+        user_service.email_all_users(email_info.subject, email_info.body)
+        return "", 204
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": (error_message if error_message else str(e))}), 500

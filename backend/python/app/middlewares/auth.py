@@ -1,10 +1,24 @@
+import os
 from flask import current_app, jsonify, request
 from functools import wraps
 
 from ..services.implementations.auth_service import AuthService
 from ..services.implementations.user_service import UserService
+from ..services.implementations.email_service import EmailService
 
-user_service = UserService(current_app.logger)
+email_service = email_service = EmailService(
+    current_app.logger,
+    {
+        "token": os.getenv("MAILER_TOKEN"),
+        "refresh_token": os.getenv("MAILER_REFRESH_TOKEN"),
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "client_id": os.getenv("MAILER_CLIENT_ID"),
+        "client_secret": os.getenv("MAILER_CLIENT_SECRET"),
+    },
+    os.getenv("MAILER_USER"),
+    "SMVS Youth App",  # must replace
+)
+user_service = UserService(current_app.logger, email_service)
 auth_service = AuthService(current_app.logger, user_service)
 
 

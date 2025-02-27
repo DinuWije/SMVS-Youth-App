@@ -1,7 +1,12 @@
-import React, { useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { FORM_CONTAINER, FORM_LABEL, FORM_INPUT } from '@/constants/Classes'
+import {
+  FORM_CONTAINER,
+  FORM_LABEL,
+  FORM_INPUT,
+  LOGO,
+} from '@/constants/Classes'
 import {
   TextInput,
   ActivityIndicator,
@@ -30,33 +35,31 @@ const Login = ({ navigation }) => {
     values: { email: string; password: string },
     { setErrors }
   ) => {
+    const { email, password } = values
+
     try {
-      const { email, password } = values
       const user: AuthenticatedUser | null = await authAPIClient.login(
         email,
         password
       )
 
-      if (user == null) {
-        setErrors({ general: 'System error.' })
-      } else {
-        setAuthenticatedUser(user)
-        //        navigation.navigate('Feed')
-      }
+      setAuthenticatedUser(user)
     } catch (e) {
-      console.log(e)
+      setErrors({ general: e.message })
     }
   }
 
-  if (authenticatedUser) {
-    navigation.navigation('Feed')
-  }
+  useEffect(() => {
+    if (authenticatedUser) {
+      navigation.navigate('Feed')
+    }
+  }, [authenticatedUser, navigation])
 
   return (
     <View className={FORM_CONTAINER}>
       <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
         <Image
-          className="w-24 h-24 self-end"
+          className={LOGO}
           source={require('../assets/images/smvs_logo.png')}
         />
       </TouchableOpacity>
@@ -78,7 +81,6 @@ const Login = ({ navigation }) => {
           handleChange,
           values,
           errors,
-          isValid,
           isSubmitting,
           submitCount,
         }) => (
@@ -126,7 +128,6 @@ const Login = ({ navigation }) => {
             ) : (
               <TouchableOpacity
                 className="justify-center items-center mt-20 mb-5 h-20 items-center bg-black rounded-xl p-5 w-full"
-                disabled={!isValid}
                 onPress={() => handleSubmit()}
               >
                 <Text className="text-2xl font-bold text-white">Log in</Text>
