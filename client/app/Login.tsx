@@ -18,6 +18,7 @@ import {
 import { AuthenticatedUser } from '../types/AuthTypes'
 import AuthContext from '@/contexts/AuthContext'
 import authAPIClient from '@/APIClients/AuthAPIClient'
+import { useRouter } from 'expo-router'
 
 const validationSchema = yup.object().shape({
   email: yup.string().label('Email').email().required(),
@@ -28,7 +29,8 @@ const validationSchema = yup.object().shape({
     .min(5, 'Seems a bit short...'),
 })
 
-const Login = ({ navigation }) => {
+const Login = () => {
+  const router = useRouter()
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext)
 
   const onLogInClick = async (
@@ -51,13 +53,13 @@ const Login = ({ navigation }) => {
 
   useEffect(() => {
     if (authenticatedUser) {
-      navigation.navigate('Feed')
+      router.push('./Feed')
     }
-  }, [authenticatedUser, navigation])
+  }, [authenticatedUser])
 
   return (
     <View className={FORM_CONTAINER}>
-      <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+      <TouchableOpacity onPress={() => router.push('./Welcome')}>
         <Image
           className={LOGO}
           source={require('../assets/images/smvs_logo.png')}

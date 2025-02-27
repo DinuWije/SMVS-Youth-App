@@ -1,6 +1,7 @@
-import Login from '@/pages/Login'
-import Register from '@/pages/Register'
-import Welcome from '@/pages/Welcome'
+import Login from './Login'
+import Interests from './Interests'
+import Register from './Register'
+import Welcome from './Welcome'
 import Feed from './Feed'
 import Articles from './Articles'
 import AccountSettings from './AccountSettings'
@@ -11,7 +12,6 @@ import { useFonts } from 'expo-font'
 import ProfileSettings from '@/app/ProfileSettings'
 import ChangePassword from './ChangePassword'
 import AuthProvider from '@/contexts/AuthProvider'
-import Interests from '@/pages/Interests'
 import CreateNotification from './CreateNotification'
 
 const Stack = createStackNavigator()
@@ -41,8 +41,15 @@ const App = () => {
         <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="Interests" component={Interests} />
+<<<<<<< HEAD
         <Stack.Screen name="CreateNotification" component={CreateNotification} />
         <Stack.Screen name="Articles" component={Articles}/>
+=======
+        <Stack.Screen
+          name="CreateNotification"
+          component={CreateNotification}
+        />
+>>>>>>> 856f78fac93b69c606763390975465a3716ee6ea
       </Stack.Navigator>
     </AuthProvider>
   )

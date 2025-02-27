@@ -17,7 +17,7 @@ class ArticleService(IArticleService):
         :type logger: logger
         """
         self.logger = logger
-
+        
     def create_article(self, article_data):
         """
         Creates a new article using validated DTO input.
@@ -32,11 +32,12 @@ class ArticleService(IArticleService):
             author_id = article_data.get("author_id")
             centre = article_data.get("centre", None)
             contents = article_data.get("contents", [])
+            cover_image = article_data.get("cover_image", None)
 
             if not title or not author_id:
                 raise ValueError("Title and author_id are required fields.")
 
-            article = Article(title=title, author_id=author_id, centre=centre)
+            article = Article(title=title, author_id=author_id, centre=centre, cover_image=cover_image)
             db.session.add(article)
             db.session.flush()
 

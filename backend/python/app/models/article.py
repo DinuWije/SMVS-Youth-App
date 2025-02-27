@@ -17,7 +17,7 @@ class Article(db.Model):
     likes_count = db.Column(db.Integer, default=0)
     comments_count = db.Column(db.Integer, default=0)
     views_count = db.Column(db.Integer, default=0)
-
+    cover_image = db.Column(db.Text, nullable=True)
     contents = db.relationship("Content", backref="article", lazy="dynamic")
 
     def to_dict(self, include_relationships=False):

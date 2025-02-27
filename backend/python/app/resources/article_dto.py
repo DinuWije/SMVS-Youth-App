@@ -7,6 +7,7 @@ class ArticleDTO:
         self.title = kwargs.get("title")
         self.author_id = kwargs.get("author_id")
         self.centre = kwargs.get("centre")
+        self.cover_image = kwargs.get("cover_image")
         self.contents = kwargs.get("contents", [])
 
     def validate(self):
@@ -55,5 +56,6 @@ class ArticleDTO:
             "title": self.title,
             "author_id": self.author_id,
             "centre": self.centre,
+            "cover_image": self.cover_image,
             "contents": self.contents,
         }
