@@ -41,15 +41,12 @@ const App = () => {
         <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="Interests" component={Interests} />
-<<<<<<< HEAD
         <Stack.Screen name="CreateNotification" component={CreateNotification} />
         <Stack.Screen name="Articles" component={Articles}/>
-=======
         <Stack.Screen
           name="CreateNotification"
           component={CreateNotification}
         />
->>>>>>> 856f78fac93b69c606763390975465a3716ee6ea
       </Stack.Navigator>
     </AuthProvider>
   )
