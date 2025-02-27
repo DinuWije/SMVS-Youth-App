@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -32,6 +30,7 @@ const FeedDetails = () => {
   // A ref to focus the comment input
   const commentInputRef = useRef<TextInput | null>(null);
 
+  // Fetch current user on mount
   useEffect(() => {
     const fetchCurrentUser = async () => {
       const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
@@ -42,6 +41,7 @@ const FeedDetails = () => {
     fetchCurrentUser();
   }, []);
 
+  // Fetch the feed post
   useEffect(() => {
     const fetchPost = async () => {
       if (!id) return;
@@ -54,7 +54,7 @@ const FeedDetails = () => {
     fetchPost();
   }, [id]);
 
-  // Fetch comments separately
+  // Fetch comments
   useEffect(() => {
     const fetchComments = async () => {
       if (!id) return;
@@ -66,6 +66,7 @@ const FeedDetails = () => {
     fetchComments();
   }, [id]);
 
+  // Determine if current user has liked
   useEffect(() => {
     if (post && currentUser) {
       const userHasLiked = post.usersWhoHaveLiked?.includes(currentUser.id);
@@ -73,6 +74,7 @@ const FeedDetails = () => {
     }
   }, [post, currentUser]);
 
+  // Like / Unlike
   const toggleLike = async () => {
     if (!post || !currentUser) return;
 
@@ -108,7 +110,7 @@ const FeedDetails = () => {
     }
   };
 
-  // When delete is clicked, call the API and route back immediately.
+  // Delete post
   const handleDelete = async () => {
     if (!post) return;
     const success = await FeedAPIClient.deletePost(Number(post.id));
@@ -130,9 +132,8 @@ const FeedDetails = () => {
     );
 
     if (success) {
-      // Clear the input
       setNewComment("");
-      // Optionally increment local comment count in the post
+      // Optionally increment local comment count
       if (post) {
         const updatedPost = { ...post, commentsCount: post.commentsCount + 1 };
         setPost(updatedPost);
@@ -145,11 +146,12 @@ const FeedDetails = () => {
     }
   };
 
-  // Focus the comment input when the user taps the comment icon
+  // Focus comment input
   const focusCommentInput = () => {
     commentInputRef.current?.focus();
   };
 
+  // Loading spinner
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -159,6 +161,7 @@ const FeedDetails = () => {
     );
   }
 
+  // If post not found
   if (!post) {
     return (
       <View className="flex-1 justify-center items-center">
@@ -167,7 +170,7 @@ const FeedDetails = () => {
     );
   }
 
-  // Format the post's date as before
+  // Format the post's date
   const formattedDate = post.createdAt
     ? new Date(Date.parse(post.createdAt)).toLocaleDateString('en-US', {
         month: 'short',
@@ -175,6 +178,7 @@ const FeedDetails = () => {
       })
     : 'Unknown Date';
 
+  // Color scheme for the first letter
   const getUserColor = (name: string): string => {
     const colors = [
       'bg-red-300', 'bg-green-300', 'bg-blue-300',
@@ -206,8 +210,8 @@ const FeedDetails = () => {
         </View>
       </View>
 
-      {/* Main Scroll */}
       <ScrollView className="p-4">
+        {/* Post Title & Author */}
         <Text className="text-2xl font-bold">{post.title}</Text>
         <View className="flex-row justify-between items-center my-4">
           <View className="flex-row items-center space-x-2">
@@ -219,11 +223,12 @@ const FeedDetails = () => {
           <Text className="text-gray-500">{formattedDate} • {post.centre}</Text>
         </View>
 
+        {/* Post Content */}
         <Text className="text-gray-700 border-l-4 border-gray-300 pl-4">
           {post.content}
         </Text>
 
-        {/* Stats section */}
+        {/* Stats Section */}
         <View className="mt-6 p-4 border rounded-lg border-gray-300">
           <View className="flex-row justify-between">
             <Text className="font-semibold">Author</Text>
@@ -255,9 +260,9 @@ const FeedDetails = () => {
           <Text className="text-gray-500">No comments yet.</Text>
         ) : (
           comments.map((c) => {
-            // Use the commenter_name from the API; if not present, fallback to "User {c.userId}"
+            // commenter_name is returned by getComments; fallback if missing
             const commenterName = c.commenter_name || `User ${c.userId}`;
-            // Format the comment date using the same style as for the post.
+            // Format the comment date
             const commentDate = c.createdAt
               ? new Date(Date.parse(c.createdAt)).toLocaleDateString('en-US', {
                   month: 'short',
@@ -265,12 +270,28 @@ const FeedDetails = () => {
                 })
               : 'Unknown Date';
 
+            // For the avatar color and initial, we can base it on commenterName
+            const color = getUserColor(commenterName);
+            const initial = commenterName.charAt(0).toUpperCase();
+
             return (
-              <View key={c.id} className="p-2 border-b border-gray-200">
-                <Text className="text-base text-gray-800">{c.content}</Text>
-                <Text className="text-xs text-gray-500">
-                  Comment by {commenterName} on {commentDate}
-                </Text>
+              <View key={c.id} className="py-3 border-b border-gray-200">
+                {/* Row with avatar, name on left, date on right */}
+                <View className="flex-row justify-between items-center">
+                  <View className="flex-row items-center space-x-2">
+                    {/* Avatar */}
+                    <View className={`w-8 h-8 rounded-full ${color} flex items-center justify-center`}>
+                      <Text className="text-white font-bold">{initial}</Text>
+                    </View>
+                    {/* Commenter Name */}
+                    <Text className="font-semibold text-gray-800">{commenterName}</Text>
+                  </View>
+                  {/* Comment Date */}
+                  <Text className="text-gray-500 text-sm">{commentDate}</Text>
+                </View>
+
+                {/* Comment Text */}
+                <Text className="mt-2 ml-10 text-gray-700">{c.content}</Text>
               </View>
             );
           })
