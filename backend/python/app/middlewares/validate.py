@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from functools import wraps
+import json
 from ..resources.create_user_dto import CreateUserDTO
 from ..resources.entity_dto import EntityDTO
 from ..resources.simple_entity_dto import SimpleEntityDTO
