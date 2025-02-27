@@ -12,6 +12,7 @@ import { AuthenticatedUser } from '@/types/AuthTypes'
 import { Formik } from 'formik'
 import { ActivityIndicator } from 'react-native'
 import * as yup from 'yup'
+import { useRouter } from 'expo-router'
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().label('First Name').required(),
@@ -31,7 +32,8 @@ const validationSchema = yup.object().shape({
     }),
 })
 
-const Register = ({ navigation }) => {
+const Register = () => {
+  const router = useRouter()
   const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext)
 
   const onSignupClick = async (values: any, { setErrors }) => {
@@ -52,13 +54,13 @@ const Register = ({ navigation }) => {
 
   useEffect(() => {
     if (authenticatedUser) {
-      navigation.navigate('Interests')
+      router.push('/Interests')
     }
-  }, [authenticatedUser, navigation])
+  }, [authenticatedUser])
 
   return (
     <View className={FORM_CONTAINER}>
-      <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+      <TouchableOpacity onPress={() => router.push('./Welcome')}>
         <Image
           className={LOGO}
           source={require('../assets/images/smvs_logo.png')}

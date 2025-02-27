@@ -1,8 +1,11 @@
 import { FORM_CONTAINER, LOGO } from '@/constants/Classes'
 import React, { useState } from 'react'
+import { useRouter } from 'expo-router'
 import { View, Image, Text, TouchableOpacity, StyleSheet } from 'react-native'
 
-const Interests = ({ navigation }) => {
+const Interests = () => {
+  const router = useRouter()
+
   const [selectedOptions, setSelectedOptions] = useState([])
 
   const options = [
@@ -25,12 +28,12 @@ const Interests = ({ navigation }) => {
 
   const handleContinue = () => {
     console.log('Options Yayyyy, idk what to do with these ', selectedOptions)
-    navigation.navigate('Feed')
+    router.push('./Feed')
   }
 
   return (
     <View className={`${FORM_CONTAINER} px-8`}>
-      <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+      <TouchableOpacity onPress={() => router.push('./Welcome')}>
         <Image
           className={LOGO}
           source={require('../assets/images/smvs_logo.png')}
