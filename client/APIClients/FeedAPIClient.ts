@@ -198,4 +198,73 @@ const deletePost = async (postId: number): Promise<boolean> => {
   }
 };
 
-export default { create, getAll, getById, likePost, unlikePost, deletePost };
+const getComments = async (postId: number): Promise<any[] | null> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
+  if (!userObject || !userObject['accessToken']) {
+    console.error("Error: User not authenticated.");
+    return null;
+  }
+  const bearerToken = `Bearer ${userObject['accessToken']}`;
+  try {
+    // First, fetch the comments for the given post.
+    const { data: comments } = await baseAPIClient.get(`/feeds/${postId}/comments`, {
+      headers: { Authorization: bearerToken },
+    });
+    // Then, fetch all users so we can map user IDs to names.
+    const { data: users } = await baseAPIClient.get(`/users`, {
+      headers: { Authorization: bearerToken },
+    });
+    const userMap: Record<number, string> = {};
+    users.forEach((user: { id: number; firstName: string }) => {
+      userMap[user.id] = user.firstName;
+    });
+    // Map each comment to include a `commenter_name` field.
+    const commentsWithNames = comments.map((comment: any) => ({
+      ...comment,
+      commenter_name: userMap[comment.userId] || `User ${comment.userId}`,
+    }));
+    return commentsWithNames;
+  } catch (error) {
+    console.error(`Error fetching comments for post ${postId}:`, error);
+    return null;
+  }
+};
+
+const addComment = async (
+  postId: number,
+  userId: number,
+  content: string,
+  parentId?: number
+): Promise<boolean> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
+  if (!userObject || !userObject['accessToken']) {
+    console.error("Error: User not authenticated.");
+    return false;
+  }
+
+  const bearerToken = `Bearer ${userObject['accessToken']}`;
+  try {
+    // POST /feeds/:feed_id/comment
+    await baseAPIClient.post(
+      `/feeds/${postId}/comment`,
+      { user_id: userId, content, parent_id: parentId },
+      { headers: { Authorization: bearerToken } }
+    );
+    console.log(`Successfully added comment to post ${postId}`);
+    return true;
+  } catch (error) {
+    console.error(`Error adding comment to post ${postId}:`, error);
+    return false;
+  }
+};
+
+export default {
+  create,
+  getAll,
+  getById,
+  likePost,
+  unlikePost,
+  deletePost,
+  getComments,
+  addComment,
+};

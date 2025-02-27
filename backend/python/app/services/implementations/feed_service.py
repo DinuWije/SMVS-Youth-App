@@ -108,6 +108,19 @@ class FeedService(IFeedService):
 
             return feed.to_dict()
 
+    def get_comments_for_feed(self, feed_id):
+        """
+        Retrieve all comments for a specific feed post.
+        """
+        feed = Feed.query.get(feed_id)
+        if not feed:
+            raise Exception("Invalid feed ID")
+
+        # Fetch all comments associated with this feed
+        comments = UserComment.query.filter_by(feed_id=feed_id).all()
+        return [comment.to_dict() for comment in comments]
+
+
     def increment_view_count(self, feed_id):
         """Increment views_count."""
         feed = Feed.query.get(feed_id)

@@ -132,6 +132,20 @@ def add_comment(feed_id):
         error_message = getattr(e, "message", None)
         return jsonify({"error": error_message if error_message else str(e)}), 500
 
+@blueprint.route("/<int:feed_id>/comments", methods=["GET"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def get_feed_comments(feed_id):
+    """
+    Get all comments for a specific feed post.
+    """
+    try:
+        comments = feed_service.get_comments_for_feed(feed_id)
+        return jsonify(comments), 200
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": error_message if error_message else str(e)}), 500
+
+
 @blueprint.route("/<int:feed_id>/like", methods=["POST"], strict_slashes=False)
 @require_authorization_by_role({"User", "Admin"})
 def add_like(feed_id):
