@@ -9,7 +9,6 @@ import SettingsAPIClient, {
 } from '@/APIClients/SettingsAPIClient'
 import interestsData from './data/interests.json'
 
-
 const SettingsInterests = () => {
   const router = useRouter()
   const { userData } = useLocalSearchParams()
