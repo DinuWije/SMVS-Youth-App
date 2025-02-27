@@ -2,6 +2,7 @@ import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Welcome from '@/pages/Welcome'
 import Feed from './Feed'
+import Articles from './Articles'
 import AccountSettings from './AccountSettings'
 
 import { createStackNavigator } from '@react-navigation/stack'
@@ -41,6 +42,7 @@ const App = () => {
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="Interests" component={Interests} />
         <Stack.Screen name="CreateNotification" component={CreateNotification} />
+        <Stack.Screen name="Articles" component={Articles}/>
       </Stack.Navigator>
     </AuthProvider>
   )
