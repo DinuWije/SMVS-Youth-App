@@ -46,20 +46,15 @@ const Login = () => {
       )
 
       setAuthenticatedUser(user)
+      router.push('/Feed')
     } catch (e) {
       setErrors({ general: e.message })
     }
   }
 
-  useEffect(() => {
-    if (authenticatedUser) {
-      router.push('./Feed')
-    }
-  }, [authenticatedUser])
-
   return (
     <View className={FORM_CONTAINER}>
-      <TouchableOpacity onPress={() => router.push('./Welcome')}>
+      <TouchableOpacity onPress={() => router.push('/Welcome')}>
         <Image
           className={LOGO}
           source={require('../assets/images/smvs_logo.png')}
