@@ -3,6 +3,7 @@ import Interests from './Interests'
 import Register from './Register'
 import Welcome from './Welcome'
 import Feed from './Feed'
+import Verification from './Verification'
 import AccountSettings from './AccountSettings'
 
 import { createStackNavigator } from '@react-navigation/stack'
@@ -39,6 +40,7 @@ const App = () => {
         />
         <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="Verification" component={Verification} />
         <Stack.Screen name="Interests" component={Interests} />
         <Stack.Screen
           name="CreateNotification"

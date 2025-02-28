@@ -47,16 +47,11 @@ const Register = () => {
         password
       )
       setAuthenticatedUser(user)
+      router.push('./Verification')
     } catch (err) {
       setErrors({ general: err.message })
     }
   }
-
-  useEffect(() => {
-    if (authenticatedUser) {
-      router.push('/Interests')
-    }
-  }, [authenticatedUser])
 
   return (
     <View className={FORM_CONTAINER}>
@@ -102,7 +97,7 @@ const Register = () => {
             </Text>
             <TextInput
               className={`${FORM_INPUT} mb-8`}
-              placeholder="John Doe"
+              placeholder="John"
               placeholderTextColor="#AAAAAA"
               onChangeText={handleChange('firstName')}
               onBlur={handleBlur('firstName')}
@@ -117,7 +112,7 @@ const Register = () => {
             </Text>
             <TextInput
               className={`${FORM_INPUT} mb-8`}
-              placeholder="John Doe"
+              placeholder="Doe"
               placeholderTextColor="#AAAAAA"
               onChangeText={handleChange('lastName')}
               onBlur={handleBlur('lastName')}
@@ -148,7 +143,7 @@ const Register = () => {
             <Text className={FORM_LABEL}>Confirm Password</Text>
             <TextInput
               className={FORM_INPUT}
-              placeholder="Password"
+              placeholder="Confirmed Password"
               placeholderTextColor="#AAAAAA"
               onChangeText={handleChange('confirmPassword')}
               onBlur={handleBlur('confirmPassword')}
