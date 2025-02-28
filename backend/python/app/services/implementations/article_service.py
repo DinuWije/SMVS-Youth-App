@@ -29,6 +29,7 @@ class ArticleService(IArticleService):
         """
         try:
             title = article_data.get("title")
+            subtitle = article_data.get("subtitle")
             author_id = article_data.get("author_id")
             centre = article_data.get("centre", None)
             contents = article_data.get("contents", [])
@@ -37,7 +38,7 @@ class ArticleService(IArticleService):
             if not title or not author_id:
                 raise ValueError("Title and author_id are required fields.")
 
-            article = Article(title=title, author_id=author_id, centre=centre, cover_image=cover_image)
+            article = Article(title=title, subtitle=subtitle, author_id=author_id, centre=centre, cover_image=cover_image)
             db.session.add(article)
             db.session.flush()
 
@@ -91,7 +92,7 @@ class ArticleService(IArticleService):
         """
         try:
             articles = Article.query.all()
-            return [article.to_dict() for article in articles]
+            return [article.to_dict(True) for article in articles]
         except Exception as e:
             self.logger.error(f"Failed to retrieve articles: {str(e)}")
             raise
@@ -174,6 +175,7 @@ class ArticleService(IArticleService):
                 self.logger.warning(f"Attempted to delete non-existent article {article_id}")
                 return False
 
+            Content.query.filter_by(article_id=article_id).delete()
             db.session.delete(article)
             db.session.commit()
             return True

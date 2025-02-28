@@ -61,7 +61,6 @@ def get_entity(id):
 @require_authorization_by_role({"User", "Admin"})
 @validate_request("EntityDTO")
 def create_entity():
-    print("HIASDFKJASDLJKASL:KDJ")
     try:
         # create a EntityResource object instead of using the raw request body
         # data validators and transformations are applied when constructing the resource,
@@ -69,14 +68,16 @@ def create_entity():
         if request.content_type == "application/json":
             body = EntityDTO(**request.json)
         else:
-            req = json.loads(request.form.get("body"))
-            req["file"] = request.files.get("file", default=None)
+            body_data = request.form.get("body")
+            req = json.loads(body_data) if body_data else {}
+            file = request.files.get("file")
+            if file:
+                req["file"] = file
             body = EntityDTO(**req)
     except Exception as e:
         error_message = getattr(e, "message", None)
         return jsonify({"error": (error_message if error_message else str(e))}), 500
 
-    # HTTP status code 201 means Created
     return jsonify(entity_service.create_entity(body)), 201
 
 

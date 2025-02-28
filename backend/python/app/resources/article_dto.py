@@ -5,6 +5,7 @@ class ArticleDTO:
 
     def __init__(self, **kwargs):
         self.title = kwargs.get("title")
+        self.subtitle = kwargs.get("subtitle")
         self.author_id = kwargs.get("author_id")
         self.centre = kwargs.get("centre")
         self.cover_image = kwargs.get("cover_image")
@@ -34,14 +35,10 @@ class ArticleDTO:
                     continue  # Skip further validation for this entry
                 
                 content_type = content.get("content_type")
-                content_data = content.get("content_data")
                 position = content.get("position", i)
 
                 if content_type not in {"text", "image", "video"}:
                     error_list.append(f"Content type '{content_type}' is invalid. Must be 'text', 'image', or 'video'.")
-
-                if not isinstance(content_data, str) or not content_data.strip():
-                    error_list.append(f"Content at position {i} must have a valid non-empty 'content_data' field.")
 
                 if not isinstance(position, int) or position < 0:
                     error_list.append(f"Content at position {i} must have a valid integer 'position' >= 0.")
@@ -54,6 +51,7 @@ class ArticleDTO:
         """
         return {
             "title": self.title,
+            "subtitle": self.subtitle,
             "author_id": self.author_id,
             "centre": self.centre,
             "cover_image": self.cover_image,

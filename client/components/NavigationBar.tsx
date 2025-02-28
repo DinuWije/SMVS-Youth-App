@@ -12,23 +12,23 @@ const NavigationBar = () => {
 
   return (
     <View className="flex-row justify-around items-center border-t border-gray-200 p-4 bg-white">
-      <TouchableOpacity onPress={() => router.push('./Welcome')}>
+      <TouchableOpacity onPress={() => router.push('/Articles')}>
         <FontAwesome5
           name="home"
-          size={24}
-          color={isActive('/Welcome') ? Colors.light.accentPurple : 'gray'}
-        />
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => router.push('./Articles')}>
-        <FontAwesome5
-          name="users"
           size={24}
           color={isActive('/Articles') ? Colors.light.accentPurple : 'gray'}
         />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('./Feed')}>
+      <TouchableOpacity onPress={() => router.push('/Welcome')}>
+        <FontAwesome5
+          name="users"
+          size={24}
+          color={isActive('/Welcome') ? Colors.light.accentPurple : 'gray'}
+        />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => router.push('/Feed')}>
         <FontAwesome5
           name="file-alt"
           size={24}
@@ -36,7 +36,7 @@ const NavigationBar = () => {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('./AccountSettings')}>
+      <TouchableOpacity onPress={() => router.push('/AccountSettings')}>
         <FontAwesome5
           name="cog"
           size={24}

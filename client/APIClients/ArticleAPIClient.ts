@@ -5,29 +5,31 @@ import { getLocalStorageObj } from '../utils/LocalStorageUtils'
 export type Article = {
   id: number
   title: string
-  author_id: number
+  subtitle: string
+  authorId: number
   centre?: string | null
-  created_at: string
-  updated_at: string
-  likes_count: number
-  comments_count: number
+  createdAt: string
+  updatedAt: string
+  likesCount: number
+  commentsCount: number
   views_count: number
-  cover_image: string
+  coverImage: string
   contents: Content[]
 }
 
 export type Content = {
   id?: number
-  content_type: 'text' | 'image'
-  content_data: string
+  contentType: 'text' | 'image'
+  contentData: string
   position: number
 }
 
 export type CreateArticleRequest = {
   title: string
-  author_id: number
+  subtitle: string
+  authorId: number
   centre?: string | null
-  cover_image?: string | null
+  coverImage?: string | null
   contents: Content[]
 }
 

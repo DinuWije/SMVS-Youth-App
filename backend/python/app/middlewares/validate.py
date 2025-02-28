@@ -27,7 +27,6 @@ def validate_request(dto_class_name):
     :param dto_class_name: the class name to create or update dto
     :type dto_class_name: str
     """
-
     def validate_dto(api_func):
         @wraps(api_func)
         def wrapper(*args, **kwargs):
