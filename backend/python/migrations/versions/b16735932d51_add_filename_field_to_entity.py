@@ -1,7 +1,7 @@
 """Add filename field to entity
 
 Revision ID: b16735932d51
-Revises: 3087ea704a2b
+Revises: 19a8ade9b537
 Create Date: 2025-02-03 20:45:19.394136
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'b16735932d51'
-down_revision = '3087ea704a2b'
+down_revision = '19a8ade9b537'
 branch_labels = None
 depends_on = None
 

@@ -43,10 +43,6 @@ const App = () => {
         <Stack.Screen name="Interests" component={Interests} />
         <Stack.Screen name="CreateNotification" component={CreateNotification} />
         <Stack.Screen name="Articles" component={Articles}/>
-        <Stack.Screen
-          name="CreateNotification"
-          component={CreateNotification}
-        />
       </Stack.Navigator>
     </AuthProvider>
   )

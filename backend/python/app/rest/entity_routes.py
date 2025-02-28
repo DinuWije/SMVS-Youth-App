@@ -61,6 +61,7 @@ def get_entity(id):
 @require_authorization_by_role({"User", "Admin"})
 @validate_request("EntityDTO")
 def create_entity():
+    print("HIASDFKJASDLJKASL:KDJ")
     try:
         # create a EntityResource object instead of using the raw request body
         # data validators and transformations are applied when constructing the resource,
