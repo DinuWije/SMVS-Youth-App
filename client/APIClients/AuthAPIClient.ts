@@ -13,6 +13,11 @@ import {
 } from '../utils/LocalStorageUtils'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
+const is_email_verified = async () => {
+  const response = await baseAPIClient.get('/auth/check_email_verified')
+  return response.status == 200
+}
+
 const login = async (
   email: string,
   password: string
@@ -133,4 +138,5 @@ export default {
   register,
   resetPassword,
   refresh,
+  is_email_verified,
 }
