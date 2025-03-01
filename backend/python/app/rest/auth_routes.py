@@ -71,6 +71,13 @@ def login():
         error_message = getattr(e, "message", None)
         return jsonify({"error": (error_message if error_message else str(e))}), 500
 
+@blueprint.route("/check_email_verified", methods=["GET"], strict_slashes=False)
+@require_authorization_by_email("email")
+def check_email_verified():
+    """
+    Checks if an email is verified or not
+    """
+    return 200
 
 @blueprint.route("/register", methods=["POST"], strict_slashes=False)
 @validate_request("RegisterUserDTO")
