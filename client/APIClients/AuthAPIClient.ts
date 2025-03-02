@@ -14,7 +14,19 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const is_email_verified = async () => {
-  const response = await baseAPIClient.get('/auth/check_email_verified')
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+  if (userObject == null) {
+    console.log('Error getting user object')
+    return false
+  }
+  const bearerToken = `Bearer ${userObject!['accessToken']}`
+  const response = await baseAPIClient.post(
+    `/auth/check_email_verified/${userObject!['email']}`,
+    {},
+    {
+      headers: { Authorization: bearerToken },
+    }
+  )
   return response.status == 200
 }
 
@@ -83,7 +95,7 @@ const register = async (
       { firstName, lastName, email, password },
       { withCredentials: true }
     )
-    // await AsyncStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data))
+    await AsyncStorage.setItem(AUTHENTICATED_USER_KEY, JSON.stringify(data))
     return data
   } catch (error) {
     throw error
@@ -91,21 +103,8 @@ const register = async (
 }
 
 const resetPassword = async (email: string | undefined): Promise<boolean> => {
-  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
-  if (userObject == null) {
-    console.log('Error getting user object')
-    return false
-  }
-
-  const bearerToken = `Bearer ${userObject['accessToken']}`
   try {
-    await baseAPIClient.post(
-      `/auth/resetPassword/${email}`,
-      {},
-      {
-        headers: { Authorization: bearerToken },
-      }
-    )
+    await baseAPIClient.post(`/auth/resetPassword/${email}`, {})
     return true
   } catch (error) {
     return false

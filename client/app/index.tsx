@@ -11,8 +11,8 @@ import '../global.css'
 import { useFonts } from 'expo-font'
 import ProfileSettings from '@/app/ProfileSettings'
 import ChangePassword from './ChangePassword'
-import AuthProvider from '@/contexts/AuthProvider'
 import CreateNotification from './CreateNotification'
+import ResetPassword from './ResetPassword'
 
 const Stack = createStackNavigator()
 
@@ -23,31 +23,27 @@ const App = () => {
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
   })
   return (
-    <AuthProvider>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="Welcome" component={Welcome} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Feed" component={Feed} />
-        <Stack.Screen
-          name="AccountSettings"
-          component={AccountSettings}
-          options={{ headerTitle: 'Settings' }}
-        />
-        <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
-        <Stack.Screen name="ChangePassword" component={ChangePassword} />
-        <Stack.Screen name="Verification" component={Verification} />
-        <Stack.Screen name="Interests" component={Interests} />
-        <Stack.Screen
-          name="CreateNotification"
-          component={CreateNotification}
-        />
-      </Stack.Navigator>
-    </AuthProvider>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="Feed" component={Feed} />
+      <Stack.Screen
+        name="AccountSettings"
+        component={AccountSettings}
+        options={{ headerTitle: 'Settings' }}
+      />
+      <Stack.Screen name="ResetPassword" component={ResetPassword} />
+      <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen name="Verification" component={Verification} />
+      <Stack.Screen name="Interests" component={Interests} />
+      <Stack.Screen name="CreateNotification" component={CreateNotification} />
+    </Stack.Navigator>
   )
 }
 

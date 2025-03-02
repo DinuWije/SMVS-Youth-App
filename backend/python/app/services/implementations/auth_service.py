@@ -196,6 +196,11 @@ class AuthService(IAuthService):
                 access_token, check_revoked=True
             )
             firebase_user = firebase_admin.auth.get_user(decoded_id_token["uid"])
+            print("EMAIL VERIFIED", firebase_user.email_verified)
+            print("SAME ", decoded_id_token["email"] == requested_email)
+            print("A ", decoded_id_token["email"])
+            print("B ", requested_email)
+
             return (
                 firebase_user.email_verified
                 and decoded_id_token["email"] == requested_email

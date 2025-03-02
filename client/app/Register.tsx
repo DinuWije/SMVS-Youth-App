@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
 import { View, TextInput, Image, Text, TouchableOpacity } from 'react-native'
 import {
   FORM_CONTAINER,
@@ -7,8 +7,6 @@ import {
   LOGO,
 } from '@/constants/Classes'
 import authAPIClient from '@/APIClients/AuthAPIClient'
-import AuthContext from '@/contexts/AuthContext'
-import { AuthenticatedUser } from '@/types/AuthTypes'
 import { Formik } from 'formik'
 import { ActivityIndicator } from 'react-native'
 import * as yup from 'yup'
@@ -34,33 +32,34 @@ const validationSchema = yup.object().shape({
 
 const Register = () => {
   const router = useRouter()
-  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext)
 
   const onSignupClick = async (values: any, { setErrors }) => {
     const { firstName, lastName, email, password } = values
 
     try {
-      const user: AuthenticatedUser = await authAPIClient.register(
-        firstName,
-        lastName,
-        email,
-        password
-      )
-      setAuthenticatedUser(user)
+      await authAPIClient.register(firstName, lastName, email, password)
       router.push('./Verification')
     } catch (err) {
-      setErrors({ general: err.message })
+      setErrors({ general: 'Issue processing your request...' })
     }
   }
 
   return (
     <View className={FORM_CONTAINER}>
-      <TouchableOpacity onPress={() => router.push('./Welcome')}>
-        <Image
-          className={LOGO}
-          source={require('../assets/images/smvs_logo.png')}
-        />
-      </TouchableOpacity>
+      <View className="flex-row justify-between">
+        <TouchableOpacity onPress={() => router.back()}>
+          <Image
+            className="w-10 h-10"
+            source={require('../assets/images/back-arrow.png')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('./Welcome')}>
+          <Image
+            className={LOGO}
+            source={require('../assets/images/smvs_logo.png')}
+          />
+        </TouchableOpacity>
+      </View>
       <Text
         style={{ fontFamily: 'Poppins-Bold' }}
         className="py-10 text-4xl self-start"
@@ -164,12 +163,10 @@ const Register = () => {
             )}
 
             {submitCount > 0 && Object.keys(errors).length > 0 && (
-              <View className="mb-2">
-                {Object.values(errors).map((error, index) => (
-                  <Text key={index} className="text-red-500 text-s">
-                    {error}
-                  </Text>
-                ))}
+              <View>
+                <Text key="signup-error" className="text-red-500 text-s">
+                  {Object.values(errors)[0]}
+                </Text>
               </View>
             )}
           </React.Fragment>

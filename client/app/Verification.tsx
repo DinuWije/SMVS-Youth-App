@@ -1,12 +1,13 @@
-import { useRouter } from 'expo-router'
 import React from 'react'
+import { View, Image, Text, TouchableOpacity } from 'react-native'
+import { FORM_CONTAINER, LOGO } from '@/constants/Classes'
+import { useRouter } from 'expo-router'
 import authAPIClient from '@/APIClients/AuthAPIClient'
-import { View, Text, Image, TouchableOpacity } from 'react-native'
 
 const Verification = () => {
   const router = useRouter()
 
-  const handlePress = async () => {
+  const onPress = async () => {
     if (await authAPIClient.is_email_verified()) {
       router.push('/Feed')
     } else {
@@ -15,21 +16,38 @@ const Verification = () => {
   }
 
   return (
-    <View className="flex-1 bg-white justify-center items-center">
-      <Image
-        source={require('../assets/images/Illustration.png')}
-        className="rounded-3xl w-[90%] h-[98%] object-cover"
-      />
-      <View className="absolute top-1/3 left-0 w-full h-2/3 flex justify-center items-center">
+    <View className={FORM_CONTAINER}>
+      <View className="flex-row justify-between">
+        <TouchableOpacity onPress={() => router.back()}>
+          <Image
+            className="w-10 h-10"
+            source={require('../assets/images/back-arrow.png')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('./Welcome')}>
+          <Image
+            className={LOGO}
+            source={require('../assets/images/smvs_logo.png')}
+          />
+        </TouchableOpacity>
+      </View>
+      <Text
+        style={{ fontFamily: 'Poppins-Bold' }}
+        className="mb-0 mt-10 text-4xl self-start"
+      >
+        Please Verify Your Email Address.
+      </Text>
+
+      <View className="mt-5 flex-row">
         <Text style={{ fontFamily: 'Inter-Regular' }} className="text-xl">
-          Please Ensure You Have Verified Your Email.
+          Already Verified?
         </Text>
-        <TouchableOpacity onPress={(e) => handlePress()}>
+        <TouchableOpacity onPress={(e) => onPress()}>
           <Text
             style={{ fontFamily: 'Inter-SemiBold' }}
-            className="mt-5 font-bold underline text-xl"
+            className="font-bold text-xl ml-2"
           >
-            I've Verified
+            Confirm and Proceed
           </Text>
         </TouchableOpacity>
       </View>
