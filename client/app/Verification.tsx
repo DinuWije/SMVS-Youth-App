@@ -9,7 +9,7 @@ const Verification = () => {
 
   const onPress = async () => {
     if (await authAPIClient.is_email_verified()) {
-      router.push('/Feed')
+      router.push('/Interests')
     } else {
       console.log('User is not verified')
     }
@@ -33,24 +33,22 @@ const Verification = () => {
       </View>
       <Text
         style={{ fontFamily: 'Poppins-Bold' }}
-        className="mb-0 mt-10 text-4xl self-start"
+        className="mb-5 mt-10 text-4xl self-start"
       >
         Please Verify Your Email Address.
       </Text>
 
-      <View className="mt-5 flex-row">
-        <Text style={{ fontFamily: 'Inter-Regular' }} className="text-xl">
-          Already Verified?
-        </Text>
-        <TouchableOpacity onPress={(e) => onPress()}>
-          <Text
-            style={{ fontFamily: 'Inter-SemiBold' }}
-            className="font-bold text-xl ml-2"
-          >
-            Confirm and Proceed
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <Image
+        className="flex-1 self-center rounded-xl"
+        source={require('../assets/images/Illustration.png')}
+      />
+
+      <TouchableOpacity
+        className="mt-7 mb-3 self-center bg-black rounded-lg my-2 p-5 w-[90%]"
+        onPress={() => onPress()}
+      >
+        <Text className="font-bold text-center text-white">I've Verified!</Text>
+      </TouchableOpacity>
     </View>
   )
 }
