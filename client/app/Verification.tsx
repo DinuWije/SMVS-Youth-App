@@ -3,13 +3,22 @@ import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { FORM_CONTAINER, LOGO } from '@/constants/Classes'
 import { useRouter } from 'expo-router'
 import authAPIClient from '@/APIClients/AuthAPIClient'
+import SettingsAPIClient, {
+  SettingsUserInfoResponse,
+} from '@/APIClients/SettingsAPIClient'
 
 const Verification = () => {
   const router = useRouter()
 
   const onPress = async () => {
     if (await authAPIClient.is_email_verified()) {
-      router.push('/Interests')
+      const response =
+        (await SettingsAPIClient.get()) as SettingsUserInfoResponse[]
+
+      router.push({
+        pathname: '/Interests',
+        params: { userData: JSON.stringify(response[0]) },
+      })
     } else {
       console.log('User is not verified')
     }

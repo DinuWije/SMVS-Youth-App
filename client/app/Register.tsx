@@ -11,6 +11,9 @@ import { Formik } from 'formik'
 import { ActivityIndicator } from 'react-native'
 import * as yup from 'yup'
 import { useRouter } from 'expo-router'
+import SettingsAPIClient, {
+  SettingsUserInfoResponse,
+} from '@/APIClients/SettingsAPIClient'
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().label('First Name').required(),
@@ -38,7 +41,7 @@ const Register = () => {
 
     try {
       await authAPIClient.register(firstName, lastName, email, password)
-      router.push('./Verification')
+      router.push('/Verification')
     } catch (err) {
       setErrors({ general: 'Issue processing your request...' })
     }
