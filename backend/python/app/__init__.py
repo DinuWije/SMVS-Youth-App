@@ -38,33 +38,28 @@ def create_app(config_name):
     if type(config_name) is not ScriptInfo:
         app.config.from_object(app_config[config_name])
 
-    app.config["CORS_ORIGINS"] = [
-        "http://localhost:8081",
-        "http://localhost:3000",
-        "http://localhost:8081",  
-        "https://uw-blueprint-starter-code.firebaseapp.com",
-        "https://uw-blueprint-starter-code.web.app",
-        re.compile("^https:\/\/uw-blueprint-starter-code--pr.*\.web\.app$"),
-    ]
+    app.config["CORS_ORIGINS"] = ["*"]
     app.config["CORS_SUPPORTS_CREDENTIALS"] = True
     CORS(app)
 
-    if os.getenv("FLASK_CONFIG") != "production":
-        app.config[
-            "SQLALCHEMY_DATABASE_URI"
-        ] = "postgresql://{username}:{password}@{host}:5432/{db}".format(
-            username=os.getenv("POSTGRES_USER"),
-            password=os.getenv("POSTGRES_PASSWORD"),
-            host=os.getenv("DB_HOST"),
-            db=(
-                os.getenv("POSTGRES_DB_TEST")
-                if app.config["TESTING"]
-                else os.getenv("POSTGRES_DB_DEV")
-            ),
-        )
-    else:
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    print("DB URL     ", os.getenv("DATABASE_URL"))
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = os.getenv("DATABASE_URL")
+
+
+    # app.config[
+    #     "SQLALCHEMY_DATABASE_URI"
+    # ] = "postgresql://{username}:{password}@{host}:5432/{db}".format(
+    #     username=os.getenv("POSTGRES_USER"),
+    #     password=os.getenv("POSTGRES_PASSWORD"),
+    #     host=os.getenv("DB_HOST"),
+    #     db=(
+    #         os.getenv("POSTGRES_DB_TEST")
+    #         if app.config["TESTING"]
+    #         else os.getenv("POSTGRES_DB_DEV")
+    #     ),
+    # )
 
     firebase_admin.initialize_app(
         firebase_admin.credentials.Certificate(
