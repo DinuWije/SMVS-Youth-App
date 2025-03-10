@@ -6,4 +6,4 @@ COPY ./backend/python/requirements.txt ./
 RUN pip install -r requirements.txt
 
 EXPOSE 8080
-ENTRYPOINT ["python", "server.py"]
+ENTRYPOINT ["python", "./backend/python/server.py"]
