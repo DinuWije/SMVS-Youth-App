@@ -4,6 +4,7 @@ import Register from './Register'
 import Welcome from './Welcome'
 import Feed from './Feed'
 import Articles from './Articles'
+import Verification from './Verification'
 import AccountSettings from './AccountSettings'
 
 import { createStackNavigator } from '@react-navigation/stack'
@@ -11,8 +12,8 @@ import '../global.css'
 import { useFonts } from 'expo-font'
 import ProfileSettings from '@/app/ProfileSettings'
 import ChangePassword from './ChangePassword'
-import AuthProvider from '@/contexts/AuthProvider'
 import CreateNotification from './CreateNotification'
+import ResetPassword from './ResetPassword'
 
 const Stack = createStackNavigator()
 
@@ -38,6 +39,7 @@ const App = () => {
           component={AccountSettings}
           options={{ headerTitle: 'Settings' }}
         />
+        <Stack.Screen name="ResetPassword" component={ResetPassword} />
         <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="Interests" component={Interests} />

@@ -15,8 +15,6 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native'
-import { AuthenticatedUser } from '../types/AuthTypes'
-import AuthContext from '@/contexts/AuthContext'
 import authAPIClient from '@/APIClients/AuthAPIClient'
 import { useRouter } from 'expo-router'
 
@@ -31,7 +29,6 @@ const validationSchema = yup.object().shape({
 
 const Login = () => {
   const router = useRouter()
-  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext)
 
   const onLogInClick = async (
     values: { email: string; password: string },
@@ -40,26 +37,29 @@ const Login = () => {
     const { email, password } = values
 
     try {
-      const user: AuthenticatedUser | null = await authAPIClient.login(
-        email,
-        password
-      )
-
-      setAuthenticatedUser(user)
+      await authAPIClient.login(email, password)
       router.push('/Feed')
     } catch (e) {
-      setErrors({ general: e.message })
+      setErrors({ general: 'Issue processing your request...' })
     }
   }
 
   return (
     <View className={FORM_CONTAINER}>
-      <TouchableOpacity onPress={() => router.push('/Welcome')}>
-        <Image
-          className={LOGO}
-          source={require('../assets/images/smvs_logo.png')}
-        />
-      </TouchableOpacity>
+      <View className="flex-row justify-between">
+        <TouchableOpacity onPress={() => router.back()}>
+          <Image
+            className="w-10 h-10"
+            source={require('../assets/images/back-arrow.png')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('./Welcome')}>
+          <Image
+            className={LOGO}
+            source={require('../assets/images/smvs_logo.png')}
+          />
+        </TouchableOpacity>
+      </View>
       <Text
         style={{ fontFamily: 'Poppins-Bold' }}
         className="py-10 text-4xl self-start"
@@ -88,7 +88,6 @@ const Login = () => {
             >
               Email address
             </Text>
-            {/* <Text>{formikProps.touched.email && formikProps.errors.email}</Text> */}
 
             <TextInput
               className={`${FORM_INPUT} mb-8`}
@@ -113,12 +112,14 @@ const Login = () => {
               value={values.password}
             />
 
-            <Text
-              style={{ fontFamily: 'Inter-Regular' }}
-              className="mt-6 text-lg self-end"
-            >
-              Forgot password?
-            </Text>
+            <TouchableOpacity onPress={() => router.push('/ResetPassword')}>
+              <Text
+                style={{ fontFamily: 'Inter-Regular' }}
+                className="mt-6 text-lg self-end"
+              >
+                Forgot password?
+              </Text>
+            </TouchableOpacity>
 
             {isSubmitting ? (
               <ActivityIndicator />
@@ -133,11 +134,9 @@ const Login = () => {
 
             {submitCount > 0 && Object.keys(errors).length > 0 && (
               <View className="mb-2">
-                {Object.values(errors).map((error, index) => (
-                  <Text key={index} className="text-red-500 text-s">
-                    {error}
-                  </Text>
-                ))}
+                <Text key="signup-error" className="text-red-500 text-s">
+                  {errors.general}
+                </Text>
               </View>
             )}
           </React.Fragment>

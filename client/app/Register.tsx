@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
 import { View, TextInput, Image, Text, TouchableOpacity } from 'react-native'
 import {
   FORM_CONTAINER,
@@ -7,12 +7,13 @@ import {
   LOGO,
 } from '@/constants/Classes'
 import authAPIClient from '@/APIClients/AuthAPIClient'
-import AuthContext from '@/contexts/AuthContext'
-import { AuthenticatedUser } from '@/types/AuthTypes'
 import { Formik } from 'formik'
 import { ActivityIndicator } from 'react-native'
 import * as yup from 'yup'
 import { useRouter } from 'expo-router'
+import SettingsAPIClient, {
+  SettingsUserInfoResponse,
+} from '@/APIClients/SettingsAPIClient'
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().label('First Name').required(),
@@ -34,38 +35,34 @@ const validationSchema = yup.object().shape({
 
 const Register = () => {
   const router = useRouter()
-  const { authenticatedUser, setAuthenticatedUser } = useContext(AuthContext)
 
   const onSignupClick = async (values: any, { setErrors }) => {
     const { firstName, lastName, email, password } = values
 
     try {
-      const user: AuthenticatedUser = await authAPIClient.register(
-        firstName,
-        lastName,
-        email,
-        password
-      )
-      setAuthenticatedUser(user)
+      await authAPIClient.register(firstName, lastName, email, password)
+      router.push('/Verification')
     } catch (err) {
-      setErrors({ general: err.message })
+      setErrors({ general: 'Issue processing your request...' })
     }
   }
 
-  useEffect(() => {
-    if (authenticatedUser) {
-      router.push('/Interests')
-    }
-  }, [authenticatedUser])
-
   return (
     <View className={FORM_CONTAINER}>
-      <TouchableOpacity onPress={() => router.push('./Welcome')}>
-        <Image
-          className={LOGO}
-          source={require('../assets/images/smvs_logo.png')}
-        />
-      </TouchableOpacity>
+      <View className="flex-row justify-between">
+        <TouchableOpacity onPress={() => router.back()}>
+          <Image
+            className="w-10 h-10"
+            source={require('../assets/images/back-arrow.png')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('./Welcome')}>
+          <Image
+            className={LOGO}
+            source={require('../assets/images/smvs_logo.png')}
+          />
+        </TouchableOpacity>
+      </View>
       <Text
         style={{ fontFamily: 'Poppins-Bold' }}
         className="py-10 text-4xl self-start"
@@ -102,7 +99,7 @@ const Register = () => {
             </Text>
             <TextInput
               className={`${FORM_INPUT} mb-8`}
-              placeholder="John Doe"
+              placeholder="John"
               placeholderTextColor="#AAAAAA"
               onChangeText={handleChange('firstName')}
               onBlur={handleBlur('firstName')}
@@ -117,7 +114,7 @@ const Register = () => {
             </Text>
             <TextInput
               className={`${FORM_INPUT} mb-8`}
-              placeholder="John Doe"
+              placeholder="Doe"
               placeholderTextColor="#AAAAAA"
               onChangeText={handleChange('lastName')}
               onBlur={handleBlur('lastName')}
@@ -148,7 +145,7 @@ const Register = () => {
             <Text className={FORM_LABEL}>Confirm Password</Text>
             <TextInput
               className={FORM_INPUT}
-              placeholder="Password"
+              placeholder="Confirmed Password"
               placeholderTextColor="#AAAAAA"
               onChangeText={handleChange('confirmPassword')}
               onBlur={handleBlur('confirmPassword')}
@@ -169,12 +166,10 @@ const Register = () => {
             )}
 
             {submitCount > 0 && Object.keys(errors).length > 0 && (
-              <View className="mb-2">
-                {Object.values(errors).map((error, index) => (
-                  <Text key={index} className="text-red-500 text-s">
-                    {error}
-                  </Text>
-                ))}
+              <View>
+                <Text key="signup-error" className="text-red-500 text-s">
+                  {Object.values(errors)[0]}
+                </Text>
               </View>
             )}
           </React.Fragment>
