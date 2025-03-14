@@ -5,6 +5,7 @@ import { getLocalStorageObj } from '../utils/LocalStorageUtils'
 export type SendEmailInfo = {
   subject: string
   body: string
+  location?: string // Optional location field
 }
 
 const send_email = async ({
@@ -22,8 +23,8 @@ const send_email = async ({
 
   try {
     const { data } = await baseAPIClient.post(
-      `/users/send_email_notifs`,
-      entityData,
+      `/users/send_email_notifs`, // Using the same endpoint
+      entityData,  // Payload now supports location
       {
         headers: { Authorization: bearerToken },
       }

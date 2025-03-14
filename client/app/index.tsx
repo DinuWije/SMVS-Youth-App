@@ -24,7 +24,6 @@ const App = () => {
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
   })
   return (
-    <AuthProvider>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
@@ -46,7 +45,6 @@ const App = () => {
         <Stack.Screen name="CreateNotification" component={CreateNotification} />
         <Stack.Screen name="Articles" component={Articles}/>
       </Stack.Navigator>
-    </AuthProvider>
   )
 }
 
