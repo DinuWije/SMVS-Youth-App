@@ -177,14 +177,27 @@ def delete_user():
 
 @blueprint.route("/send_email_notifs", methods=["POST"], strict_slashes=False)
 @require_authorization_by_role("Admin")
-# @validate_request("EmailUsersDTO")
 def send_email_notifs():
     """
-    Email all users with notifs_enabled=True with a notification
+    Email users with notifs_enabled=True, optionally filtered by location.
     """
     try:
         email_info = EmailUsersDTO(**request.json)
-        user_service.email_all_users(email_info.subject, email_info.body)
+        location = request.json.get("location")  # Extract location if provided
+
+        if location:
+            # Get users filtered by location
+            users_in_location = user_service.get_users_by_location(location)
+
+            if not users_in_location:
+                return jsonify({"error": f"No users found in location: {location}"}), 404
+            
+            # Send emails only to users in the specified location
+            user_service.email_users_in_location(users_in_location, email_info.subject, email_info.body)
+        else:
+            # Default behavior: email all users if no location is provided
+            user_service.email_all_users(email_info.subject, email_info.body)
+
         return "", 204
     except Exception as e:
         error_message = getattr(e, "message", None)
