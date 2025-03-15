@@ -14,6 +14,7 @@ import ProfileSettings from '@/app/ProfileSettings'
 import ChangePassword from './ChangePassword'
 import CreateNotification from './CreateNotification'
 import ResetPassword from './ResetPassword'
+import MeditationPage from './MeditationPage'
 
 const Stack = createStackNavigator()
 
@@ -44,6 +45,7 @@ const App = () => {
         <Stack.Screen name="Interests" component={Interests} />
         <Stack.Screen name="CreateNotification" component={CreateNotification} />
         <Stack.Screen name="Articles" component={Articles}/>
+        <Stack.Screen name="MeditationPage" component={MeditationPage}/>
       </Stack.Navigator>
   )
 }

@@ -15,9 +15,9 @@ class Article(db.Model):
     updated_at = db.Column(
         db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp()
     )
-    likes_count = db.Column(db.Integer, default=0)
-    comments_count = db.Column(db.Integer, default=0)
-    views_count = db.Column(db.Integer, default=0)
+    rating = db.Column(db.Float, default=4.0)
+    number_of_ratings = db.Column(db.Integer, default=200)
+    time_to_read = db.Column(db.Integer, default=25)
     cover_image = db.Column(db.Text, nullable=True)
     contents = db.relationship("Content", backref="article", lazy="dynamic")
 

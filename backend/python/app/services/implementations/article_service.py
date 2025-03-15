@@ -1,3 +1,4 @@
+import random
 from ...models import db
 from ...models.article import Article
 from ...models.content import Content
@@ -37,8 +38,21 @@ class ArticleService(IArticleService):
 
             if not title or not author_id:
                 raise ValueError("Title and author_id are required fields.")
+            
+            rating = round(random.uniform(4.0, 5.0), 2)  # Random float between 4 and 5
+            number_of_ratings = random.randint(5, 30) 
+            time_to_read = random.choice([15, 20, 25, 30])  # Random selection from predefined values
 
-            article = Article(title=title, subtitle=subtitle, author_id=author_id, centre=centre, cover_image=cover_image)
+            article = Article(
+                title=title,
+                subtitle=subtitle,
+                author_id=author_id,
+                centre=centre,
+                cover_image=cover_image,
+                rating=rating,
+                number_of_ratings=number_of_ratings,
+                time_to_read=time_to_read
+            )
             db.session.add(article)
             db.session.flush()
 

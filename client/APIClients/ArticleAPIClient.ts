@@ -10,9 +10,9 @@ export type Article = {
   centre?: string | null
   createdAt: string
   updatedAt: string
-  likesCount: number
-  commentsCount: number
-  views_count: number
+  rating: number
+  number_of_ratings: number
+  time_to_read: number
   coverImage: string
   contents: Content[]
 }

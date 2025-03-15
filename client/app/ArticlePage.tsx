@@ -88,8 +88,10 @@ const ArticleComponent = ({ articleId }: { articleId: string }) => {
           <Text className="text-gray-500 mt-1 text-lg">{article.subtitle}</Text>
           <View className="flex-row items-center mt-2">
             <FontAwesome name="star" size={14} color="gold" />
-            <Text className="ml-1 text-gray-600">4.3</Text>
-            <Text className="ml-2 text-gray-600">200+ Ratings</Text>
+            <Text className="ml-1 text-gray-600">{article.rating}</Text>
+            <Text className="ml-2 text-gray-600">{article.numberOfRatings} Ratings</Text>
+            <Ionicons name="time-outline" size={14} color="gray" className="ml-3" />
+            <Text className="ml-1 text-gray-600">{article.timeToRead} Mins</Text>
           </View>
         </View>
 

@@ -20,11 +20,11 @@ const NavigationBar = () => {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/Welcome')}>
+      <TouchableOpacity onPress={() => router.push('/MeditationPage')}>
         <FontAwesome5
           name="users"
           size={24}
-          color={isActive('/Welcome') ? Colors.light.accentPurple : 'gray'}
+          color={isActive('/MeditationPage') ? Colors.light.accentPurple : 'gray'}
         />
       </TouchableOpacity>
 
