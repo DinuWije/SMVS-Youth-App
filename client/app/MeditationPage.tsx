@@ -106,7 +106,7 @@ const MeditationPage = () => {
       {/* Animated Lottie (Bigger) */}
       <View className="items-center">
         {/* Set the parent size explicitly */}
-        <View style={{ width: width, height: width }}>
+        <View style={{ width: width *0.8, height: width *0.8 }}>
           <LottieView
             source={require("../assets/meditationAnimation.json")}
             style={{ flex: 1 }}
@@ -126,6 +126,14 @@ const MeditationPage = () => {
           setOpen={setOpen}
           setValue={setSelectedAudio}
           placeholder="Select an audio"
+          zIndex={9999}
+          zIndexInverse={9999}
+          dropDownContainerStyle={{
+            zIndex: 9999,
+          }}
+          containerStyle={{
+            zIndex: 9999,
+          }}
         />
       </View>
 
