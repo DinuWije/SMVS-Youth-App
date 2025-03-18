@@ -6,8 +6,9 @@ import AUTHENTICATED_USER_KEY from '../constants/AuthConstants'
 import { DecodedJWT } from '../types/AuthTypes'
 import { setLocalStorageObjProperty } from '../utils/LocalStorageUtils'
 
+const URL = 'https://smvs-youth-app.onrender.com'
 const baseAPIClient = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: URL,
 })
 
 // Python API uses snake_case, frontend uses camelCase
@@ -40,7 +41,7 @@ baseAPIClient.interceptors.request.use(async (config: AxiosRequestConfig) => {
         decodedToken.exp <= Math.round(new Date().getTime() / 1000))
     ) {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/auth/refresh`,
+        `${URL}/auth/refresh`,
         {},
         { withCredentials: true }
       )
