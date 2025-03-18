@@ -1,6 +1,6 @@
 import baseAPIClient from "./BaseAPIClient";
 import AUTHENTICATED_USER_KEY from "../constants/AuthConstants";
-import { getLocalStorageObjProperty } from "../utils/LocalStorageUtils";
+import { getLocalStorageObj } from '../utils/LocalStorageUtils'
 
 enum EnumField {
 	"A",
@@ -24,32 +24,40 @@ export type EntityResponse = {
 	stringArrayField: string[];
 	enumField: EnumField;
 	boolField: boolean;
+	fileName: string;
 };
 
-const create = async ({
-	formData,
-}: {
-	formData: EntityRequest;
-}): Promise<EntityResponse | null> => {
-	const bearerToken = `Bearer ${getLocalStorageObjProperty(
-		AUTHENTICATED_USER_KEY,
-		"accessToken",
-	)}`;
+const create = async ({ formData }: { formData: FormData }): Promise<EntityResponse | null> => {
+	const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+	if (userObject == null) {
+		console.log('Error getting user object')
+		return null
+	}
+	const bearerToken = `Bearer ${userObject!['accessToken']}`
 	try {
-		const { data } = await baseAPIClient.post("/entities", formData, {
-			headers: { Authorization: bearerToken },
-		});
-		return data;
+	  const { data } = await baseAPIClient.post("/entities", formData, {
+		headers: {
+		  Authorization: bearerToken,
+		  "Content-Type": "multipart/form-data",
+		},
+	  });
+  
+	  console.log("API Response:", data);
+	  return data;
 	} catch (error) {
-		return null;
+	  console.error("API Request Error:", error);
+	  return null;
 	}
 };
 
 const get = async (): Promise<EntityResponse[] | null> => {
-	const bearerToken = `Bearer ${getLocalStorageObjProperty(
-		AUTHENTICATED_USER_KEY,
-		"accessToken",
-	)}`;
+	const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+	if (userObject == null) {
+		console.log('Error getting user object')
+		return null
+	}
+
+	const bearerToken = `Bearer ${userObject!['accessToken']}`
 	try {
 		const { data } = await baseAPIClient.get("/entities", {
 			headers: { Authorization: bearerToken },
@@ -61,10 +69,13 @@ const get = async (): Promise<EntityResponse[] | null> => {
 };
 
 const getCSV = async (): Promise<string | null> => {
-	const bearerToken = `Bearer ${getLocalStorageObjProperty(
-		AUTHENTICATED_USER_KEY,
-		"accessToken",
-	)}`;
+	const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+	if (userObject == null) {
+		console.log('Error getting user object')
+		return null
+	}
+
+	const bearerToken = `Bearer ${userObject!['accessToken']}`
 	try {
 		const { data } = await baseAPIClient.get("/entities", {
 			// Following line is necessary to set the Content-Type header
@@ -101,4 +112,25 @@ const update = async (
 	}
 };
 
-export default { create, get, getCSV, update };
+const getFile = async (fileId: string): Promise<string | null> => {
+	const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY);
+	if (!userObject) {
+	  console.log("Error getting user object");
+	  return null;
+	}
+  
+	const bearerToken = `Bearer ${userObject["accessToken"]}`;
+  
+	try {
+	  const { data } = await baseAPIClient.get(`/entities/files/${fileId}`, {
+		headers: { Authorization: bearerToken },
+	  });
+	  return data; // Return the Firebase file URL
+	} catch (error) {
+	  console.error("Error fetching file:", error);
+	  return null;
+	}
+  };
+  
+
+export default { create, get, getCSV, update, getFile};

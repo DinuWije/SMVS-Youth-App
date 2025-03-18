@@ -431,3 +431,45 @@ class UserService(IUserService):
                 raise e
 
         return
+
+    def get_users_by_location(self, location):
+        """
+        Retrieve users with notifs_enabled=True in the specified location.
+        
+        :param location: The location to filter users by
+        :type location: str
+        :return: List of users in the specified location
+        :rtype: list[User]
+        """
+        try:
+            users_in_location = User.query.filter_by(location=location, allow_notifs=True).all()
+            return users_in_location
+        except Exception as e:
+            reason = getattr(e, "message", None)
+            self.logger.error(
+                "Failed to retrieve users by location. Reason = {reason}".format(
+                    reason=(reason if reason else str(e))
+                )
+            )
+            raise e
+
+    def email_users_in_location(self, users, subject, body):
+        """
+        Send emails to users in a specified location.
+
+        :param users: List of users to email
+        :type users: list[User]
+        :param subject: Email subject
+        :type subject: str
+        :param body: Email body
+        :type body: str
+        """
+        email_list = [user.email_address for user in users]
+        for email in email_list:
+            try:
+                self.email_service.send_email(email, subject, body)
+            except Exception as e:
+                self.logger.error(
+                    "Failed to send email to user with email {email}".format(email=email)
+                )
+                raise e

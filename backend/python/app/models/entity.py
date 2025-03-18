@@ -18,11 +18,6 @@ class Entity(db.Model):
     __tablename__ = "entities"
 
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    string_field = db.Column(db.String, nullable=False)
-    int_field = db.Column(db.Integer, nullable=False)
-    enum_field = db.Column(enum, nullable=False)
-    string_array_field = db.Column(db.ARRAY(db.String), nullable=False)
-    bool_field = db.Column(db.Boolean, nullable=False)
     file_name = db.Column(db.String)
 
     # must define how to convert to a dict so that Entity can eventually be serialized into JSON

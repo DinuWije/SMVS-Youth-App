@@ -42,7 +42,6 @@ def create_app(config_name):
     app.config["CORS_SUPPORTS_CREDENTIALS"] = True
     CORS(app)
 
-    print("DB URL     ", os.getenv("DATABASE_URL"))
     app.config[
         "SQLALCHEMY_DATABASE_URI"
     ] = os.getenv("DATABASE_URL")
