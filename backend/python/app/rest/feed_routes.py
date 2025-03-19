@@ -103,7 +103,6 @@ def delete_feed(feed_id):
     """
     Delete a feed post by ID
     """
-    console.log("deleting?")
     try:
         deleted_id = feed_service.delete_entity(feed_id)
         return jsonify({"message": f"Feed post {deleted_id} deleted successfully"}), 200
