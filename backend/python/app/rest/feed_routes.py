@@ -186,3 +186,17 @@ def remove_like(feed_id):
     except Exception as e:
         error_message = getattr(e, "message", None)
         return jsonify({"error": error_message if error_message else str(e)}), 500
+
+@blueprint.route("/<int:feed_id>/comments/<int:comment_id>", methods=["DELETE"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def delete_comment(feed_id, comment_id):
+    """
+    Delete a specific comment by ID on a feed post, 
+    just like delete_feed: no user references.
+    """
+    try:
+        deleted_id = feed_service.delete_comment(feed_id, comment_id)
+        return jsonify({"message": f"Comment {deleted_id} deleted successfully"}), 200
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": error_message if error_message else str(e)}), 500

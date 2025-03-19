@@ -153,3 +153,24 @@ class FeedService(IFeedService):
         db.session.commit()
         return feed.to_dict()
 
+
+    def delete_comment(self, feed_id, comment_id):
+        """
+        Delete the comment with the given ID that belongs to feed_id.
+        No user logic here—any 'User' or 'Admin' can delete.
+        """
+        # Check that the comment belongs to feed_id
+        comment = UserComment.query.filter_by(id=comment_id, feed_id=feed_id).first()
+        if not comment:
+            raise Exception("Invalid comment ID or feed mismatch")
+
+        # Optionally decrement the feed's comment count
+        feed = Feed.query.get(feed_id)
+        if feed:
+            feed.comments_count = max(0, feed.comments_count - 1)
+
+        db.session.delete(comment)
+        db.session.commit()
+
+        return comment_id
+
