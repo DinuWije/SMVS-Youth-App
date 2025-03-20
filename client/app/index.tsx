@@ -15,6 +15,7 @@ import ChangePassword from './ChangePassword'
 import CreateNotification from './CreateNotification'
 import ResetPassword from './ResetPassword'
 import MeditationPage from './MeditationPage'
+import ProgressTracking from './ProgressTracking'
 
 const Stack = createStackNavigator()
 
@@ -25,28 +26,29 @@ const App = () => {
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
   })
   return (
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="Welcome" component={Welcome} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="Feed" component={Feed} />
-        <Stack.Screen
-          name="AccountSettings"
-          component={AccountSettings}
-          options={{ headerTitle: 'Settings' }}
-        />
-        <Stack.Screen name="ResetPassword" component={ResetPassword} />
-        <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
-        <Stack.Screen name="ChangePassword" component={ChangePassword} />
-        <Stack.Screen name="Interests" component={Interests} />
-        <Stack.Screen name="CreateNotification" component={CreateNotification} />
-        <Stack.Screen name="Articles" component={Articles}/>
-        <Stack.Screen name="MeditationPage" component={MeditationPage}/>
-      </Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="Feed" component={Feed} />
+      <Stack.Screen
+        name="AccountSettings"
+        component={AccountSettings}
+        options={{ headerTitle: 'Settings' }}
+      />
+      <Stack.Screen name="ResetPassword" component={ResetPassword} />
+      <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen name="Interests" component={Interests} />
+      <Stack.Screen name="CreateNotification" component={CreateNotification} />
+      <Stack.Screen name="Articles" component={Articles} />
+      <Stack.Screen name="MeditationPage" component={MeditationPage} />
+      <Stack.Screen name="Progress" component={ProgressTracking} />
+    </Stack.Navigator>
   )
 }
 

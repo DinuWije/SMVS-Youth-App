@@ -108,11 +108,35 @@ const AccountSettings = () => {
     <View className="flex-1 bg-white">
       {/* Header */}
       <View className="p-4 border-b border-gray-200">
-        <Text className="text-3xl font-bold text-black">Account Settings</Text>
+        <Text className="text-3xl font-bold text-black">Account</Text>
       </View>
 
       {/* Settings Options */}
       <View className="flex-1 px-4 py-1 space-y-3">
+        {/* ProgressTracking */}
+        <TouchableOpacity
+          className="flex-row items-center justify-between border-b border-gray-200 py-4"
+          onPress={() =>
+            router.push({
+              pathname: './ProgressTracking',
+              params: { userData: JSON.stringify(userData) },
+            })
+          }
+          disabled={!userData}
+        >
+          <View className="flex-row items-center">
+            <Ionicons name="flash-outline" size={26} color="gray" />
+            <View className="pl-4">
+              <Text className="text-base font-semibold text-black">
+                Progress Tracking
+              </Text>
+              <Text className="text-sm text-gray-500">
+                Check if you're on the leaderboard!
+              </Text>
+            </View>
+          </View>
+          <Ionicons name="chevron-forward-outline" size={20} color="gray" />
+        </TouchableOpacity>
         {/* Profile Information */}
         <TouchableOpacity
           className="flex-row items-center justify-between border-b border-gray-200 py-4"
@@ -149,7 +173,7 @@ const AccountSettings = () => {
           }
         >
           <View className="flex-row items-center">
-            <Ionicons name="flash-outline" size={26} color="gray" />
+            <Ionicons name="bulb-outline" size={26} color="gray" />
             <View className="pl-4">
               <Text className="text-base font-semibold text-black">
                 Interests
