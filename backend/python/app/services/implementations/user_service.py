@@ -1,9 +1,12 @@
+from datetime import timedelta
 import firebase_admin.auth
 
 from ..interfaces.user_service import IUserService
 from ...models.user import User
+from ...models.progress import Progress
 from ...models import db
 from ...resources.user_dto import UserDTO
+from ...resources.progress_dto import ProgressDTO
 
 
 class UserService(IUserService):
@@ -473,3 +476,71 @@ class UserService(IUserService):
                     "Failed to send email to user with email {email}".format(email=email)
                 )
                 raise e
+    
+    def update_progress(self, progress_item):
+        new_progress = None
+        try:
+            new_progress = Progress(**progress_item)
+            db.session.add(new_progress)
+            db.session.commit()
+        except Exception as postgres_error:
+            raise postgres_error
+
+        return ProgressDTO(**new_progress.to_dict())
+    
+    def delete_progress(self, user_id):
+        try:
+            # Verify the user exists
+            user = User.query.get(user_id)
+            if not user:
+                raise Exception(f"user_id {user_id} not found")
+                
+            # Delete all progress records for this user
+            delete_count = Progress.query.filter_by(user_id=user_id).delete(
+                synchronize_session="fetch"
+            )
+            
+            # Commit the transaction
+            db.session.commit()
+            
+            # Log the deletion
+            self.logger.info(
+                f"Deleted {delete_count} progress records for user_id {user_id}"
+            )
+            
+            return delete_count
+            
+        except Exception as e:
+            # Rollback in case of error
+            db.session.rollback()
+            
+            reason = getattr(e, "message", None)
+            self.logger.error(
+                "Failed to delete progress records. Reason = {reason}".format(
+                    reason=(reason if reason else str(e))
+                )
+            )
+            raise e
+
+    def get_points_by_date(self, user_id, start_date=None, end_date=None):
+        # Start with base query to filter by user_id
+        query = Progress.query.filter_by(user_id=user_id)
+        
+        # Add date range filters if provided
+        if start_date:
+            query = query.filter(Progress.date >= start_date)
+        
+        if end_date:
+            # Add 1 day to end_date to include the entire end date
+            end_date_inclusive = end_date + timedelta(days=1)
+            query = query.filter(Progress.date < end_date_inclusive)
+        
+        # Execute query and return results
+        progress_records = query.all()
+        
+        if not progress_records:
+            # Return empty list instead of raising exception if no records found
+            return []
+            
+        return progress_records
+    
