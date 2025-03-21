@@ -19,7 +19,7 @@ import SettingsAPIClient, {
 const ProgressTracking = () => {
   const router = useRouter()
   const [readingProgress, setReadingProgress] = useState(0)
-  const [streak, setStreak] = useState(0)
+  const [streak, setStreak] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [objectives, setObjectives] = useState([
     { id: 1, title: 'Read an Article', completed: false },
@@ -82,12 +82,42 @@ const ProgressTracking = () => {
           { id: 2, title: 'Meditate', completed: meditatedToday },
           { id: 3, title: 'Post on Feed', completed: postedOnFeedToday },
         ]
+        if (meditatedToday) {
+          setStreak(2)
+        }
         setObjectives(updatedObjectives)
 
-        // Set streak based on objective completion
-        const allObjectivesCompleted =
-          readArticleToday && meditatedToday && postedOnFeedToday
-        setStreak(allObjectivesCompleted ? 2 : 1)
+        // Check for meditation from current day specifically
+        const currentDate = new Date()
+        currentDate.setHours(0, 0, 0, 0) // Set to beginning of current day
+
+        const meditationEntries = response.filter(
+          (item) => item && item.contentType === 'meditation' && item.date
+        )
+
+        // Log for debugging
+        console.log('Meditation entries:', meditationEntries.length)
+
+        // Check if any meditation entry matches current day
+        const meditatedCurrentDay = meditationEntries.some((item) => {
+          const itemDate = new Date(item.date)
+          itemDate.setHours(0, 0, 0, 0) // Set to beginning of day for comparison
+          const isCurrentDay = itemDate.getTime() === currentDate.getTime()
+
+          // Log for debugging
+          console.log(
+            `Item date: ${itemDate}, currentDate: ${currentDate}, match: ${isCurrentDay}`
+          )
+
+          return isCurrentDay
+        })
+
+        // Log the result
+        console.log('Meditated current day:', meditatedCurrentDay)
+        console.log('Setting streak to:', meditatedCurrentDay ? 2 : 1)
+
+        // Always set streak here, regardless of other conditions
+        // setStreak(meditatedCurrentDay ? 2 : 1)
       } else {
         setReadingProgress(0)
         setStreak(0)
@@ -171,8 +201,6 @@ const ProgressTracking = () => {
     inputRange: [0, 1],
     outputRange: ['#FF9D00', '#FF4500'],
   })
-
-  // Daily objectives data is now managed in state
 
   // Leaderboard data - this could be updated with real data from the API
   const leaderboard = [
