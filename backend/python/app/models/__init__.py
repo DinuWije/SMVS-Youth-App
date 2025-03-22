@@ -16,6 +16,7 @@ def init_app(app):
     from .progress import Progress
     from .quiz import Quiz
     from .quiz_completions import QuizCompletion
+    from .reflection import Reflection
     
     app.app_context().push()
     db.init_app(app)

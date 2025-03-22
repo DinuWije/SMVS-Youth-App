@@ -17,6 +17,9 @@ import ResetPassword from './ResetPassword'
 import MeditationPage from './MeditationPage'
 import ProgressTracking from './ProgressTracking'
 import QuizScreen from './quiz/[id]'
+import ReflectionPage from './ReflectionPage'
+import ReflectionHistory from './ReflectionHistory'
+import ReflectionMeditationPage from './ReflectionMeditationPage'
 
 const Stack = createStackNavigator()
 
@@ -49,6 +52,9 @@ const App = () => {
       <Stack.Screen name="Articles" component={Articles} />
       <Stack.Screen name="MeditationPage" component={MeditationPage} />
       <Stack.Screen name="Progress" component={ProgressTracking} />
+      <Stack.Screen name="ReflectionPage" component={ReflectionPage} />
+      <Stack.Screen name="ReflectionHistory" component={ReflectionHistory} />
+      <Stack.Screen name="ReflectionMeditationPage" component={ReflectionMeditationPage} />
       <Stack.Screen name="Quiz" component={QuizScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
