@@ -50,21 +50,13 @@ const Interests = () => {
 
   const handleContinue = async () => {
     const selectedInterests = selectedOptions.map((index) => options[index])
-
-    const updatedUserData: UpdateSettingsUserInfoRequest = {
-      ...parsedUserData,
-      interests: selectedInterests,
-    }
-
     try {
-      const updatedUser = await SettingsAPIClient.update({
-        entityData: updatedUserData,
+      router.push({
+        pathname: './Location',
+        params: {
+          interests: selectedInterests.join('-'),
+        },
       })
-
-      if (!updatedUser) {
-        throw new Error('Failed to update interests')
-      }
-      router.push('./Feed')
     } catch (error) {
       console.error('Error updating interests:', error)
       Alert.alert('Error', 'Failed to set interests. Please try again.')
