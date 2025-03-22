@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 
 const VIDEO_STORAGE_KEY = 'videoList'; // Key to store video list in AsyncStorage
 
@@ -62,7 +63,7 @@ const PostNewReel: React.FC = () => {
       setVideoList(updatedVideos);
 
       Alert.alert('Success', 'Video uploaded successfully!');
-      router.back(); 
+      router.push('/reelsScreen'); // Ensure it goes to reelsScreen
     } catch (error) {
       console.error('Error saving video:', error);
       Alert.alert('Error', 'Failed to upload video.');
@@ -71,12 +72,22 @@ const PostNewReel: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.closeButton}>
-          <FontAwesome name="close" size={24} color="black" />
+      {/* Header */}
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            if (window.history.length > 1) {
+              router.back();
+            } else {
+              router.push('/reelsScreen'); // Changed to reelsScreen to match the rest of the file
+            }
+          }}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={28} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Post New Video</Text>
+        <View style={styles.headerRightSpace} />
       </View>
 
       {/* Form Inputs (Top Half of Screen) */}
@@ -142,23 +153,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
     justifyContent: 'space-between',
   },
-  header: {
+  headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16, // Equivalent to mb-4
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
-  closeButton: {
-    position: 'absolute',
-    left: 20,
-    top: '50%',
-    transform: [{ translateY: -12 }],
+  backButton: {
+    // No additional styles needed
   },
   headerText: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 24,
+    fontSize: 24, // Equivalent to text-2xl
     fontWeight: 'bold',
+  },
+  headerRightSpace: {
+    width: 28, // Equivalent to space to match Ionicons
   },
   formContainer: {
     paddingHorizontal: 20,
