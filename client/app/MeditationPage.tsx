@@ -333,8 +333,8 @@ const MeditationPage = ({ hideNavigation = false }) => {
               {!goalReached ? (
                 <Text className="text-purple-700 mb-3">
                   {meditationActive 
-                    ? `Goal: 5:00 (${getRemainingTimeForGoal()} remaining)` 
-                    : "Goal: Meditate for 5 minutes"}
+                    ? `Daily Goal: 5:00 (${getRemainingTimeForGoal()} remaining)` 
+                    : "Daily Goal: Meditate for 5 minutes"}
                 </Text>
               ) : (
                 <Text className="text-green-600 font-bold mb-3">

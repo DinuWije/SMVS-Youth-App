@@ -345,7 +345,7 @@ const ReflectionPage = ({ hideNavigation = false }) => {
             )}
             
             {/* Reflection input field */}
-            {!responseReceived && (
+            {(
                 <>
                 <Text className="text-gray-700 font-medium mb-1">Your Reflection</Text>
                 <TextInput

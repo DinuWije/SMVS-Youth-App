@@ -8,6 +8,7 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  ScrollView,
   StyleSheet,
 } from 'react-native'
 import SettingsAPIClient, {
@@ -65,57 +66,59 @@ const Interests = () => {
 
   return (
     <View className={`${FORM_CONTAINER} px-8`}>
-      <TouchableOpacity onPress={() => router.push('./Welcome')}>
-        <Image
-          className={LOGO}
-          source={require('../assets/images/smvs_logo.png')}
-        />
-      </TouchableOpacity>
-      <Text
-        style={{ fontFamily: 'Poppins-Bold' }}
-        className="text-4xl self-start mt-12"
-      >
-        Choose your interests
-      </Text>
-      <Text
-        className="text-lg leading-snug mt-4"
-        style={{ fontFamily: 'Inter-Regular' }}
-      >
-        To complete the sign up process, please choose what you are interested
-        in
-      </Text>
-
-      <View className="mt-6">
-        {options.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleOptionSelect(index)}
-            className={`items-center bg-white rounded-2xl my-2 p-5 flex-row justify-between border ${
-              selectedOptions.includes(index)
-                ? 'border-black'
-                : 'border-gray-300'
-            }`}
-          >
-            <Text className="text-xl" style={{ fontFamily: 'Inter-SemiBold' }}>
-              {option}
-            </Text>
-            <View style={styles.optionCircle}>
-              {selectedOptions.includes(index) && (
-                <View style={styles.filledCircle} />
-              )}
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <TouchableOpacity
-        className="bg-black rounded-2xl my-2 p-6 mt-auto"
-        onPress={handleContinue}
-      >
-        <Text className="text-xl font-bold text-center text-white">
-          Continue
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        <TouchableOpacity onPress={() => router.push('./Welcome')}>
+          <Image
+            className={LOGO}
+            source={require('../assets/images/smvs_logo.png')}
+          />
+        </TouchableOpacity>
+        <Text
+          style={{ fontFamily: 'Poppins-Bold' }}
+          className="text-4xl self-start mt-12"
+        >
+          Choose your interests
         </Text>
-      </TouchableOpacity>
+        <Text
+          className="text-lg leading-snug mt-4"
+          style={{ fontFamily: 'Inter-Regular' }}
+        >
+          To complete the sign up process, please choose what you are interested
+          in
+        </Text>
+
+        <View className="mt-6">
+          {options.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleOptionSelect(index)}
+              className={`items-center bg-white rounded-2xl my-2 p-5 flex-row justify-between border ${
+                selectedOptions.includes(index)
+                  ? 'border-black'
+                  : 'border-gray-300'
+              }`}
+            >
+              <Text className="text-xl" style={{ fontFamily: 'Inter-SemiBold' }}>
+                {option}
+              </Text>
+              <View style={styles.optionCircle}>
+                {selectedOptions.includes(index) && (
+                  <View style={styles.filledCircle} />
+                )}
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <TouchableOpacity
+          className="bg-black rounded-2xl my-2 p-6 mt-auto"
+          onPress={handleContinue}
+        >
+          <Text className="text-xl font-bold text-center text-white">
+            Continue
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   )
 }
