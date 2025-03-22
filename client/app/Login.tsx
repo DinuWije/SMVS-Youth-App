@@ -14,6 +14,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native'
 import authAPIClient from '@/APIClients/AuthAPIClient'
 import { useRouter } from 'expo-router'
@@ -46,6 +47,7 @@ const Login = () => {
 
   return (
     <View className={FORM_CONTAINER}>
+      <ScrollView>
       <View className="flex-row justify-between">
         <TouchableOpacity onPress={() => router.back()}>
           <Image
@@ -53,6 +55,9 @@ const Login = () => {
             source={require('../assets/images/back-arrow.png')}
           />
         </TouchableOpacity>
+        
+      </View>
+      <View className="flex-1 items-center justify-center">
         <TouchableOpacity onPress={() => router.push('./Articles')}>
           <Image
             className={LOGO}
@@ -142,6 +147,7 @@ const Login = () => {
           </React.Fragment>
         )}
       </Formik>
+      </ScrollView>
     </View>
   )
 }

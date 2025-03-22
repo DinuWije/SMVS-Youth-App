@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput, Image, Text, TouchableOpacity } from 'react-native'
+import { View, TextInput, Image, Text, TouchableOpacity, ScrollView } from 'react-native'
 import {
   FORM_CONTAINER,
   FORM_LABEL,
@@ -49,6 +49,7 @@ const Register = () => {
 
   return (
     <View className={FORM_CONTAINER}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
       <View className="flex-row justify-between">
         <TouchableOpacity onPress={() => router.back()}>
           <Image
@@ -56,6 +57,8 @@ const Register = () => {
             source={require('../assets/images/back-arrow.png')}
           />
         </TouchableOpacity>
+      </View>
+      <View className="flex-1 items-center justify-center">
         <TouchableOpacity onPress={() => router.push('./Welcome')}>
           <Image
             className={LOGO}
@@ -175,6 +178,7 @@ const Register = () => {
           </React.Fragment>
         )}
       </Formik>
+      </ScrollView>
     </View>
   )
 }
