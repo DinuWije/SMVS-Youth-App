@@ -213,7 +213,9 @@ def upgrade_progress():
     Add an item to the progress table for the user
     """
     try:
+        print("HEREREREREE")
         progress = CreateProgressDTO(**request.json)
+        print(progress)
         progress_dict = {
             "user_id": progress.user_id,
             "content_type": progress.content_type,

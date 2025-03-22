@@ -126,8 +126,9 @@ const updateProgress = async (
   const bearerToken = `Bearer ${userObject!['accessToken']}`
 
   try {
+    console.log(progressData)
     const { data } = await baseAPIClient.post(
-      '/update_progress',
+      '/users/update_progress',
       progressData,
       {
         headers: { Authorization: bearerToken },

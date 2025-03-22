@@ -7,6 +7,8 @@ def init_app(app):
         documentation_routes,
         article_routes,
         feed_routes,
+        quiz_routes,
+        quiz_completion_routes
     )
 
     app.register_blueprint(user_routes.blueprint)
@@ -16,3 +18,5 @@ def init_app(app):
     app.register_blueprint(documentation_routes.blueprint)
     app.register_blueprint(article_routes.blueprint)
     app.register_blueprint(feed_routes.blueprint)
+    app.register_blueprint(quiz_routes.blueprint)
+    app.register_blueprint(quiz_completion_routes.blueprint)

@@ -3,7 +3,8 @@ from ...models import db
 from ...models.article import Article
 from ...models.content import Content
 from ..interfaces.article_service import IArticleService
-
+from ...models.quiz import Quiz
+from ...models.quiz_completions import QuizCompletion
 
 class ArticleService(IArticleService):
     """
@@ -176,7 +177,7 @@ class ArticleService(IArticleService):
 
     def delete_article(self, article_id):
         """
-        Deletes an article.
+        Deletes an article and its associated data.
 
         :param article_id: ID of the article
         :type article_id: int
@@ -189,7 +190,16 @@ class ArticleService(IArticleService):
                 self.logger.warning(f"Attempted to delete non-existent article {article_id}")
                 return False
 
+            # First, find and delete any associated quiz completions
+            QuizCompletion.query.filter_by(article_id=article_id).delete()
+            
+            # Next, find and delete any associated quizzes
+            Quiz.query.filter_by(article_id=article_id).delete()
+            
+            # Delete article contents
             Content.query.filter_by(article_id=article_id).delete()
+            
+            # Finally delete the article
             db.session.delete(article)
             db.session.commit()
             return True

@@ -114,7 +114,7 @@ const AccountSettings = () => {
       {/* Settings Options */}
       <View className="flex-1 px-4 py-1 space-y-3">
         {/* ProgressTracking */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           className="flex-row items-center justify-between border-b border-gray-200 py-4"
           onPress={() =>
             router.push({
@@ -136,7 +136,7 @@ const AccountSettings = () => {
             </View>
           </View>
           <Ionicons name="chevron-forward-outline" size={20} color="gray" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* Profile Information */}
         <TouchableOpacity
           className="flex-row items-center justify-between border-b border-gray-200 py-4"

@@ -53,7 +53,7 @@ const Login = () => {
             source={require('../assets/images/back-arrow.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('./Welcome')}>
+        <TouchableOpacity onPress={() => router.push('./Articles')}>
           <Image
             className={LOGO}
             source={require('../assets/images/smvs_logo.png')}

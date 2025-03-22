@@ -481,6 +481,7 @@ class UserService(IUserService):
         new_progress = None
         try:
             new_progress = Progress(**progress_item)
+            print(new_progress)
             db.session.add(new_progress)
             db.session.commit()
         except Exception as postgres_error:

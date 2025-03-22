@@ -14,6 +14,8 @@ def init_app(app):
     from .article import Article
     from .content import Content
     from .progress import Progress
+    from .quiz import Quiz
+    from .quiz_completions import QuizCompletion
     
     app.app_context().push()
     db.init_app(app)
