@@ -1,17 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 
 const VIDEO_STORAGE_KEY = 'videoList'; // Key to store video list in AsyncStorage
 
+// Example categories for multi-select
+const ALL_CATEGORIES = ['Well-being', 'Health', 'Fitness', 'Mindfulness'];
+const ALL_LOCATIONS = [
+  'Atlanta',
+  'New York',
+  'Boston',
+  'Cherry Hill',
+  'Chicago',
+  'Edison',
+  'Jersey City',
+  'San Francisco',
+  'Toronto',
+  'United Kingdom',
+];
+
 const PostNewReel: React.FC = () => {
-  const router = useRouter(); // 🔥 Correctly using router from expo-router
+  const router = useRouter(); // 🔥 Using router from expo-router
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('Well-being');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // Multi-select categories
   const [location, setLocation] = useState('Atlanta');
   const [videoFile, setVideoFile] = useState<string | null>(null);
   const [videoList, setVideoList] = useState<string[]>([]);
@@ -31,6 +54,17 @@ const PostNewReel: React.FC = () => {
 
     fetchVideoList();
   }, []);
+
+  // Toggle a category in or out of the selectedCategories array
+  const toggleCategory = (category: string) => {
+    if (selectedCategories.includes(category)) {
+      // Remove it if already selected
+      setSelectedCategories((prev) => prev.filter((cat) => cat !== category));
+    } else {
+      // Add it if not selected
+      setSelectedCategories((prev) => [...prev, category]);
+    }
+  };
 
   // Handle Video Selection
   const pickVideo = async () => {
@@ -62,7 +96,7 @@ const PostNewReel: React.FC = () => {
       setVideoList(updatedVideos);
 
       Alert.alert('Success', 'Video uploaded successfully!');
-      router.back(); 
+      router.push('/ReelsScreen'); // Ensure it goes to reelsScreen
     } catch (error) {
       console.error('Error saving video:', error);
       Alert.alert('Error', 'Failed to upload video.');
@@ -71,16 +105,26 @@ const PostNewReel: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header Section */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.closeButton}>
-          <FontAwesome name="close" size={24} color="black" />
+      {/* Header */}
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            if (window.history.length > 1) {
+              router.back();
+            } else {
+              router.push('/ReelsScreen');
+            }
+          }}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={28} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Post New Video</Text>
+        <View style={styles.headerRightSpace} />
       </View>
 
-      {/* Form Inputs (Top Half of Screen) */}
-      <View style={styles.formContainer}>
+      <ScrollView contentContainerStyle={styles.formContainer}>
+        {/* Title */}
         <Text style={styles.label}>Title</Text>
         <TextInput
           style={styles.input}
@@ -89,42 +133,51 @@ const PostNewReel: React.FC = () => {
           onChangeText={setTitle}
         />
 
-        <Text style={styles.label}>Category</Text>
-        <Picker
-          selectedValue={category}
-          onValueChange={(itemValue) => setCategory(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Well-being" value="Well-being" />
-          <Picker.Item label="Health" value="Health" />
-          <Picker.Item label="Fitness" value="Fitness" />
-          <Picker.Item label="Mindfulness" value="Mindfulness" />
-        </Picker>
+        {/* Multi-Select Categories */}
+        <Text style={styles.label}>Categories</Text>
+        <View style={styles.categoriesContainer}>
+          {ALL_CATEGORIES.map((cat) => {
+            const isSelected = selectedCategories.includes(cat);
+            return (
+              <TouchableOpacity
+                key={cat}
+                style={[styles.categoryItem, isSelected && styles.categoryItemSelected]}
+                onPress={() => toggleCategory(cat)}
+              >
+                <Text style={styles.categoryText}>{cat}</Text>
+                {isSelected && <FontAwesome name="check" size={16} color="green" />}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
 
-        <Text style={styles.label}>Location</Text>
-        <Picker
-          selectedValue={location}
-          onValueChange={(itemValue) => setLocation(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Atlanta" value="Atlanta" />
-          <Picker.Item label="New York" value="New York" />
-          <Picker.Item label="Los Angeles" value="Los Angeles" />
-          <Picker.Item label="Chicago" value="Chicago" />
-          <Picker.Item label="Edison" value="Edison" />
-          <Picker.Item label="Jersey City" value="Jersey City" />
-          <Picker.Item label="San Francisco" value="San Francisco" />
-          <Picker.Item label="Toronto" value="Toronto" />
-          <Picker.Item label="United Kingdom" value="United Kingdom" />
-        </Picker>
+        {/* Single-Select Location (For Example) */}
 
+        <Text style={styles.label}>Locations</Text>
+        <View style={styles.categoriesContainer}>
+          {ALL_LOCATIONS.map((cat) => {
+            const isSelected = selectedCategories.includes(cat);
+            return (
+              <TouchableOpacity
+                key={cat}
+                style={[styles.categoryItem, isSelected && styles.categoryItemSelected]}
+                onPress={() => toggleCategory(cat)}
+              >
+                <Text style={styles.categoryText}>{cat}</Text>
+                {isSelected && <FontAwesome name="check" size={16} color="green" />}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* Video Selection */}
         <Text style={styles.label}>Video</Text>
         <TouchableOpacity style={styles.uploadBox} onPress={pickVideo}>
           <Text style={styles.uploadText}>
             {videoFile ? 'Video Selected' : 'Upload Video'}
           </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
 
       {/* Publish Button at the Bottom */}
       <View style={styles.bottomButtonContainer}>
@@ -136,34 +189,32 @@ const PostNewReel: React.FC = () => {
   );
 };
 
+export default PostNewReel;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8',
-    justifyContent: 'space-between',
   },
-  header: {
+  headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
-  closeButton: {
-    position: 'absolute',
-    left: 20,
-    top: '50%',
-    transform: [{ translateY: -12 }],
-  },
+  backButton: {},
   headerText: {
-    flex: 1,
-    textAlign: 'center',
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  headerRightSpace: {
+    width: 28,
   },
   formContainer: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-    flex: 1, // Pushes form to top half
   },
   label: {
     fontSize: 16,
@@ -178,10 +229,46 @@ const styles = StyleSheet.create({
     borderColor: '#DDD',
     marginTop: 5,
   },
-  picker: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
+  categoriesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
     marginTop: 5,
+  },
+  categoryItem: {
+    backgroundColor: '#E8E8E8',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  categoryItemSelected: {
+    backgroundColor: '#d0ffd0', // Light green when selected
+  },
+  categoryText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 5,
+    flexWrap: 'wrap',
+  },
+  locationOption: {
+    backgroundColor: '#E8E8E8',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  locationSelected: {
+    backgroundColor: '#d0ffd0',
+  },
+  locationText: {
+    fontSize: 14,
+    color: '#555',
   },
   uploadBox: {
     backgroundColor: '#E8E8E8',
@@ -197,7 +284,7 @@ const styles = StyleSheet.create({
   bottomButtonContainer: {
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
-    paddingBottom: 30, // Pushes to bottom
+    paddingBottom: 30,
   },
   publishButton: {
     backgroundColor: '#9B5DE5',
@@ -211,5 +298,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-export default PostNewReel;
