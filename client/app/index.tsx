@@ -36,35 +36,35 @@ const App = () => {
         headerShown: false,
       }}
     >
-      {/* <Stack.Screen name="Welcome" component={Welcome} /> */}
-      {/* <Stack.Screen name="Login" component={Login} /> */}
-      {/* <Stack.Screen name="Register" component={Register} /> */}
-      {/* <Stack.Screen name="Feed" component={Feed} /> */}
-      {/* <Stack.Screen */}
-      {/*   name="AccountSettings" */}
-      {/*   component={AccountSettings} */}
-      {/*   options={{ headerTitle: 'Settings' }} */}
-      {/* /> */}
-      {/* <Stack.Screen name="Interests" component={Interests} /> */}
+      <Stack.Screen name="Welcome" component={Welcome} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="Feed" component={Feed} />
+      <Stack.Screen
+        name="AccountSettings"
+        component={AccountSettings}
+        options={{ headerTitle: 'Settings' }}
+      />
+      <Stack.Screen name="Interests" component={Interests} />
       <Stack.Screen name="Location" component={Location} />
-      {/* <Stack.Screen name="ResetPassword" component={ResetPassword} /> */}
-      {/* <Stack.Screen name="ProfileSettings" component={ProfileSettings} /> */}
-      {/* <Stack.Screen name="ChangePassword" component={ChangePassword} /> */}
-      {/* <Stack.Screen name="CreateNotification" component={CreateNotification} /> */}
-      {/* <Stack.Screen name="Articles" component={Articles} /> */}
-      {/* <Stack.Screen name="MeditationPage" component={MeditationPage} /> */}
-      {/* <Stack.Screen name="Progress" component={ProgressTracking} /> */}
-      {/* <Stack.Screen name="ReflectionPage" component={ReflectionPage} /> */}
-      {/* <Stack.Screen name="ReflectionHistory" component={ReflectionHistory} /> */}
-      {/* <Stack.Screen */}
-      {/*   name="ReflectionMeditationPage" */}
-      {/*   component={ReflectionMeditationPage} */}
-      {/* /> */}
-      {/* <Stack.Screen */}
-      {/*   name="Quiz" */}
-      {/*   component={QuizScreen} */}
-      {/*   options={{ headerShown: false }} */}
-      {/* /> */}
+      <Stack.Screen name="ResetPassword" component={ResetPassword} />
+      <Stack.Screen name="ProfileSettings" component={ProfileSettings} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen name="CreateNotification" component={CreateNotification} />
+      <Stack.Screen name="Articles" component={Articles} />
+      <Stack.Screen name="MeditationPage" component={MeditationPage} />
+      <Stack.Screen name="Progress" component={ProgressTracking} />
+      <Stack.Screen name="ReflectionPage" component={ReflectionPage} />
+      <Stack.Screen name="ReflectionHistory" component={ReflectionHistory} />
+      <Stack.Screen
+        name="ReflectionMeditationPage"
+        component={ReflectionMeditationPage}
+      />
+      <Stack.Screen
+        name="Quiz"
+        component={QuizScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   )
 }
