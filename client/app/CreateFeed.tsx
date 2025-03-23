@@ -113,11 +113,11 @@ export default function CreateFeed() {
       <View className="flex-row items-center justify-between mb-4">
         <TouchableOpacity
           onPress={() => {
-            if (window.history.length > 1) {
-              router.back();
-            } else {
+            // if (window.history.length > 1) {
+            //   router.back();
+            // } else {
               router.push('/Feed');
-            }
+            // }
           }}
         >
           <Ionicons name="arrow-back" size={28} color="black" />

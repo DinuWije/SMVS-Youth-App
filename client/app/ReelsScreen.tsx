@@ -3,7 +3,7 @@ import { FlatList, View, Dimensions, StyleSheet, Text, TouchableOpacity, Image, 
 import { FontAwesome } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import NavigationBar from '../components/NavigationBar';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
+import { Video } from 'expo-av';
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
 
@@ -100,14 +100,28 @@ const ReelsScreen = () => {
 
   const renderItem = ({ item, index }: { item: any; index: number }) => (
     <View style={styles.videoContainer}>
-      <video
-        ref={(ref) => (videoRefs.current[index] = ref)}
-        src={item.videoUrl}
-        muted
-        loop
-        playsInline
-        style={styles.video}
-      />
+      {Platform.OS === 'web' ? (
+        <video
+          ref={(ref) => (videoRefs.current[index] = ref)}
+          src={item.videoUrl}
+          muted
+          loop
+          playsInline
+          autoPlay
+          style={styles.video}
+        />
+      ) : (
+        <Video
+          ref={(ref) => (videoRefs.current[index] = ref)}
+          source={{ uri: item.videoUrl }}
+          isMuted
+          isLooping
+          resizeMode="cover"
+          shouldPlay={index === currentVideoIndex}
+          style={styles.video}
+        />
+      )}
+
       {/* Top gradient overlay */}
       <View style={styles.topGradient}>
         <View style={styles.headerContainer}>
@@ -161,18 +175,11 @@ const ReelsScreen = () => {
       />
 
       {/* Floating Add Reel Button */}
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={styles.addReelButton}
         onPress={() => router.push('/PostNewReel')}
       >
         <FontAwesome name="plus" size={24} color="white" />
-      </TouchableOpacity> */}
-      <TouchableOpacity
-        className="absolute bottom-20 right-5 bg-purple-600 p-4 rounded-full shadow-lg flex items-center justify-center"
-        onPress={() => router.push('/PostNewReel')}
-        style={Platform.OS === 'web' ? { zIndex: 1000 } : {}}
-      >
-        <Ionicons name="add" size={32} color="white" />
       </TouchableOpacity>
 
       <NavigationBar />
