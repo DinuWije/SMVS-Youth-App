@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { FlatList, View, Dimensions, StyleSheet, Text, TouchableOpacity, Image, Platform } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import NavigationBar from '../components/NavigationBar';
 import { Video } from 'expo-av';
+
 
 const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
 
@@ -176,10 +177,11 @@ const ReelsScreen = () => {
 
       {/* Floating Add Reel Button */}
       <TouchableOpacity
-        style={styles.addReelButton}
+        className="absolute bottom-20 right-5 bg-purple-600 p-4 rounded-full shadow-lg flex items-center justify-center"
         onPress={() => router.push('/PostNewReel')}
+        style={Platform.OS === 'web' ? { zIndex: 1000 } : {}}
       >
-        <FontAwesome name="plus" size={24} color="white" />
+        <Ionicons name="add" size={32} color="white" />
       </TouchableOpacity>
 
       <NavigationBar />
