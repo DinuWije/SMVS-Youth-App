@@ -149,3 +149,43 @@ class IUserService(ABC):
         :raises Exception: if user deletion fails
         """
         pass
+
+    @abstractmethod
+    def update_progress(self, progress):
+        """
+        Update a user's progress
+
+        :param progress: the progress to be updated
+        :type progress: UpdateProgressDTO
+        :return: the updated progress
+        :rtype: ProgressDTO
+        :raises Exception: if progress update fails
+        """
+        pass
+
+    @abstractmethod
+    def get_points_by_date(self, user_id, start_date=None, end_date=None):
+        """
+        Get progress points for a user filtered by date range
+        
+        Args:
+            user_id (str): The user ID to get progress for
+            start_date (datetime, optional): Start date for filtering
+            end_date (datetime, optional): End date for filtering
+            
+        Returns:
+            list: Collection of Progress objects for the user within the date range
+        """
+        pass
+
+    @abstractmethod
+    def delete_progress(self, user_id):
+        """
+        Delete all progress entries for a given user.
+        
+        :param user_id: The ID of the user whose progress should be deleted
+        :type user_id: int or str
+        :return: Number of records deleted
+        :rtype: int
+        """
+        pass

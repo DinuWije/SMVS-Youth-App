@@ -7,7 +7,9 @@ from ..resources.simple_entity_dto import SimpleEntityDTO
 from ..resources.register_user_dto import RegisterUserDTO
 from ..resources.update_user_dto import UpdateUserDTO
 from ..resources.article_dto import ArticleDTO
+from ..resources.reflection_dto import ReflectionDTO
 from ..resources.feed_dto import FeedDTO  
+from ..resources.quiz_dto import QuizDTO
 
 dtos = {
     "CreateUserDTO": CreateUserDTO,
@@ -16,7 +18,9 @@ dtos = {
     "RegisterUserDTO": RegisterUserDTO,
     "UpdateUserDTO": UpdateUserDTO,
     "ArticleDTO": ArticleDTO,
-    "FeedDTO": FeedDTO,  
+    "FeedDTO": FeedDTO, 
+    "QuizDTO": QuizDTO, 
+    "ReflectionDTO": ReflectionDTO,
 }
 
 

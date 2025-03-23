@@ -6,6 +6,8 @@ from ..middlewares.auth import require_authorization_by_role
 from ..middlewares.validate import validate_request
 from ..resources.feed_dto import FeedDTO
 from ..services.implementations.feed_service import FeedService
+from ..services.implementations.user_service import UserService
+from ..services.implementations.email_service import EmailService
 
 # Initialize the feed service
 feed_service = FeedService(current_app.logger)
@@ -13,6 +15,19 @@ feed_service = FeedService(current_app.logger)
 # Define the Blueprint for feeds
 blueprint = Blueprint("feeds", __name__, url_prefix="/feeds")
 
+
+email_service = EmailService(
+    current_app.logger,
+    {
+        "refresh_token": os.getenv("MAILER_REFRESH_TOKEN"),
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "client_id": os.getenv("MAILER_CLIENT_ID"),
+        "client_secret": os.getenv("MAILER_CLIENT_SECRET"),
+    },
+    os.getenv("MAILER_USER"),
+    "SMVS Youth App",  # must replace
+)
+user_service = UserService(current_app.logger, email_service)
 
 # @blueprint.route("/", methods=["GET"], strict_slashes=False)
 # @require_authorization_by_role({"User", "Admin"})
@@ -74,6 +89,13 @@ def create_feed():
     """
     try:
         feed = FeedDTO(**request.json)
+        progress_dict = {
+            "user_id": feed.author_id,
+            "content_type": "feed",
+            "points_collected": 1
+        }
+        created_progress = user_service.update_progress(progress_dict)
+
         created_feed = feed_service.create_feed_post(feed)
         return jsonify(created_feed), 201
     except Exception as e:
@@ -103,7 +125,6 @@ def delete_feed(feed_id):
     """
     Delete a feed post by ID
     """
-    console.log("deleting?")
     try:
         deleted_id = feed_service.delete_entity(feed_id)
         return jsonify({"message": f"Feed post {deleted_id} deleted successfully"}), 200
@@ -184,6 +205,20 @@ def remove_like(feed_id):
         user_id = request.json.get("user_id")
         updated_feed = feed_service.remove_like(feed_id, user_id)
         return jsonify(updated_feed), 200
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": error_message if error_message else str(e)}), 500
+
+@blueprint.route("/<int:feed_id>/comments/<int:comment_id>", methods=["DELETE"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def delete_comment(feed_id, comment_id):
+    """
+    Delete a specific comment by ID on a feed post, 
+    just like delete_feed: no user references.
+    """
+    try:
+        deleted_id = feed_service.delete_comment(feed_id, comment_id)
+        return jsonify({"message": f"Comment {deleted_id} deleted successfully"}), 200
     except Exception as e:
         error_message = getattr(e, "message", None)
         return jsonify({"error": error_message if error_message else str(e)}), 500

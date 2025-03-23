@@ -110,7 +110,7 @@ const FeedDetails = () => {
     }
   };
 
-  // Delete post
+  // Delete the entire post
   const handleDelete = async () => {
     if (!post) return;
     const success = await FeedAPIClient.deletePost(Number(post.id));
@@ -143,6 +143,19 @@ const FeedDetails = () => {
       if (data) setComments(data);
     } else {
       Alert.alert("Error adding comment");
+    }
+  };
+
+  // Delete a specific comment
+  const handleDeleteComment = async (commentId: number) => {
+    if (!id) return;
+    const success = await FeedAPIClient.deleteComment(Number(id), commentId);
+    if (success) {
+      // Re-fetch comments
+      const updated = await FeedAPIClient.getComments(Number(id));
+      if (updated) setComments(updated);
+    } else {
+      Alert.alert("Error", "Unable to delete comment");
     }
   };
 
@@ -191,7 +204,8 @@ const FeedDetails = () => {
 
   const userInitial = post.author_name ? post.author_name.charAt(0).toUpperCase() : '?';
   const avatarColor = getUserColor(post.author_name || 'Unknown');
-  const canDelete = currentUser && (currentUser.id === post.authorId || currentUser.role === 'Admin');
+  const canDeletePost =
+    currentUser && (currentUser.id === post.authorId || currentUser.role === 'Admin');
 
   return (
     <View className="flex-1 bg-white">
@@ -199,7 +213,7 @@ const FeedDetails = () => {
       <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
         <Text className="text-3xl font-bold text-black">Feed</Text>
         <View className="flex-row items-center space-x-2">
-          {canDelete && (
+          {canDeletePost && (
             <TouchableOpacity onPress={handleDelete}>
               <FontAwesome name="trash" size={22} color="red" />
             </TouchableOpacity>
@@ -274,9 +288,14 @@ const FeedDetails = () => {
             const color = getUserColor(commenterName);
             const initial = commenterName.charAt(0).toUpperCase();
 
+            // Determine if current user can delete THIS comment
+            const canDeleteComment =
+              currentUser &&
+              (currentUser.role === 'Admin' || currentUser.id === c.userId);
+
             return (
               <View key={c.id} className="py-3 border-b border-gray-200">
-                {/* Row with avatar, name on left, date on right */}
+                {/* Row with avatar, name on left, date & trash icon on right */}
                 <View className="flex-row justify-between items-center">
                   <View className="flex-row items-center space-x-2">
                     {/* Avatar */}
@@ -286,8 +305,16 @@ const FeedDetails = () => {
                     {/* Commenter Name */}
                     <Text className="font-semibold text-gray-800">{commenterName}</Text>
                   </View>
-                  {/* Comment Date */}
-                  <Text className="text-gray-500 text-sm">{commentDate}</Text>
+                  <View className="flex-row items-center space-x-3">
+                    {/* Comment Date */}
+                    <Text className="text-gray-500 text-sm">{commentDate}</Text>
+                    {/* Delete icon if allowed */}
+                    {canDeleteComment && (
+                      <TouchableOpacity onPress={() => handleDeleteComment(c.id)}>
+                        <FontAwesome name="trash" size={18} color="red" />
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 </View>
 
                 {/* Comment Text */}

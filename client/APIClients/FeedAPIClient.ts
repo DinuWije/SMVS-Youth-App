@@ -277,6 +277,28 @@ const addComment = async (
   }
 }
 
+const deleteComment = async (postId: number, commentId: number): Promise<boolean> => {
+  const userObject = await getLocalStorageObj(AUTHENTICATED_USER_KEY)
+  if (!userObject || !userObject['accessToken']) {
+    console.error('Error: User not authenticated.')
+    return false
+  }
+
+  const bearerToken = `Bearer ${userObject['accessToken']}`
+  try {
+    // EXACTLY like deletePost, but for comments
+    await baseAPIClient.delete(`/feeds/${postId}/comments/${commentId}`, {
+      headers: { Authorization: bearerToken },
+    })
+    console.log(`Successfully deleted comment ${commentId} on post ${postId}`)
+    return true
+  } catch (error) {
+    console.error(`Error deleting comment ${commentId} on post ${postId}:`, error)
+    return false
+  }
+}
+
+
 export default {
   create,
   getAll,
@@ -286,4 +308,5 @@ export default {
   deletePost,
   getComments,
   addComment,
+  deleteComment,
 }

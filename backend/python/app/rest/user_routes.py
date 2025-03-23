@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import os
 
 from flask import Blueprint, current_app, jsonify, request
@@ -7,6 +8,7 @@ from ..middlewares.validate import validate_request
 from ..resources.create_user_dto import CreateUserDTO
 from ..resources.update_user_dto import UpdateUserDTO
 from ..resources.email_users_dto import EmailUsersDTO
+from ..resources.create_progress_dto import CreateProgressDTO
 from ..services.implementations.auth_service import AuthService
 from ..services.implementations.email_service import EmailService
 from ..services.implementations.user_service import UserService
@@ -199,6 +201,93 @@ def send_email_notifs():
             user_service.email_all_users(email_info.subject, email_info.body)
 
         return "", 204
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": (error_message if error_message else str(e))}), 500
+
+
+@blueprint.route("/update_progress", methods=["POST"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def upgrade_progress():
+    """
+    Add an item to the progress table for the user
+    """
+    try:
+        print("HEREREREREE")
+        progress = CreateProgressDTO(**request.json)
+        print(progress)
+        progress_dict = {
+            "user_id": progress.user_id,
+            "content_type": progress.content_type,
+            "points_collected": progress.points_collected
+        }
+        created_progress = user_service.update_progress(progress_dict)
+        return jsonify(created_progress.__dict__), 201
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": (error_message if error_message else str(e))}), 500
+    
+@blueprint.route("/get_points_by_date", methods=["GET"], strict_slashes=False)
+@require_authorization_by_role({"User", "Admin"})
+def get_points_by_date():
+    """
+    Retrieve progress points for a user filtered by date range
+    """
+    try:
+        # Get query parameters
+        user_id = request.args.get("user_id")
+        start_date = request.args.get("start_date")
+        end_date = request.args.get("end_date")
+        
+        # Validate required parameters
+        if not user_id:
+            return jsonify({"error": "user_id is required"}), 400
+            
+        # Convert dates if provided
+        date_params = {}
+        if start_date:
+            try:
+                date_params["start_date"] = datetime.strptime(start_date, "%Y-%m-%d")
+            except ValueError:
+                return jsonify({"error": "Invalid start_date format. Use YYYY-MM-DD"}), 400
+                
+        if end_date:
+            try:
+                date_params["end_date"] = datetime.strptime(end_date, "%Y-%m-%d")
+            except ValueError:
+                return jsonify({"error": "Invalid end_date format. Use YYYY-MM-DD"}), 400
+        
+        # Call service method with parameters
+        progress_points = user_service.get_points_by_date(user_id, **date_params)
+             # Use to_dict() method on each Progress object to make it serializable
+        serialized_points = [p.to_dict() for p in progress_points]
+        points_sum = sum(p["points_collected"] for p in serialized_points)
+
+        # Return results
+        return jsonify(serialized_points), 200
+    except Exception as e:
+        error_message = getattr(e, "message", None)
+        return jsonify({"error": (error_message if error_message else str(e))}), 500
+    
+@blueprint.route("/delete_progress", methods=["DELETE"], strict_slashes=False)
+@require_authorization_by_role({"Admin", "User"})  # Restrict to admins for safety
+def delete_user_progress():
+    """
+    Delete all progress entries for a given user
+    """
+    try:
+        # Get user_id from query parameters
+        user_id = request.args.get("user_id")
+        
+        # Validate required parameters
+        if not user_id:
+            return jsonify({"error": "user_id is required"}), 400
+            
+        # Call service method
+        deleted_count = user_service.delete_progress(user_id)
+        
+        # Return success response with count of deleted records
+        return jsonify({"message": f"Successfully deleted {deleted_count} progress records"}), 200
     except Exception as e:
         error_message = getattr(e, "message", None)
         return jsonify({"error": (error_message if error_message else str(e))}), 500
