@@ -65,14 +65,16 @@ const Interests = () => {
   }
 
   return (
-    <View className={`${FORM_CONTAINER} px-8`}>
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-        <TouchableOpacity onPress={() => router.push('./Welcome')}>
-          <Image
-            className={LOGO}
-            source={require('../assets/images/smvs_logo.png')}
-          />
-        </TouchableOpacity>
+    <View className={FORM_CONTAINER}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+				<View className="flex-row justify-center align-center">
+					<TouchableOpacity onPress={() => router.push('./Welcome')}>
+						<Image
+							className="w-10 h-10"
+							source={require('../assets/images/smvs_logo.png')}
+						/>
+					</TouchableOpacity>
+				</View>
         <Text
           style={{ fontFamily: 'Poppins-Bold' }}
           className="text-4xl self-start mt-12"
@@ -111,7 +113,7 @@ const Interests = () => {
         </View>
 
         <TouchableOpacity
-          className="bg-black rounded-2xl my-2 p-6 mt-auto"
+          className="bg-black rounded-2xl my-2 p-6 mt-4"
           onPress={handleContinue}
         >
           <Text className="text-xl font-bold text-center text-white">
