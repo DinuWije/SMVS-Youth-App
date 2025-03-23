@@ -109,11 +109,11 @@ const PostNewReel: React.FC = () => {
       <View style={styles.headerContainer}>
         <TouchableOpacity
           onPress={() => {
-            if (window.history.length > 1) {
-              router.back();
-            } else {
+            // if (window.history.length > 1) {
+            //   router.back();
+            // } else {
               router.push('/ReelsScreen');
-            }
+            // }
           }}
           style={styles.backButton}
         >
