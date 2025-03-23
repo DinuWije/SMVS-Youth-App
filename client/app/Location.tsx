@@ -15,6 +15,7 @@ import SettingsAPIClient, {
   SettingsUserInfoResponse,
   UpdateSettingsUserInfoRequest,
 } from '@/APIClients/SettingsAPIClient'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const ALL_LOCATIONS = [
   'Atlanta',
@@ -65,59 +66,63 @@ const Location = () => {
   }
 
   return (
-    <View className={`${FORM_CONTAINER} px-8`}>
-      <TouchableOpacity onPress={() => router.push('./Welcome')}>
-        <Image
-          className={LOGO}
-          source={require('../assets/images/smvs_logo.png')}
-        />
-      </TouchableOpacity>
-      <Text
-        style={{ fontFamily: 'Poppins-Bold' }}
-        className="text-4xl self-start mt-12"
-      >
-        Choose your city
-      </Text>
-      <Text
-        className="text-lg leading-snug mt-4"
-        style={{ fontFamily: 'Inter-Regular' }}
-      >
-        To complete the sign up process, please select which city you currently
-        reside in.
-      </Text>
+    <View className={FORM_CONTAINER}>
+			<ScrollView showsVerticalScrollIndicator={false}>
+				<View className="flex-row justify-center align-center">
+					<TouchableOpacity onPress={() => router.push('./Welcome')}>
+						<Image
+							className="w-10 h-10"
+							source={require('../assets/images/smvs_logo.png')}
+						/>
+					</TouchableOpacity>
+				</View>
+				<Text
+					style={{ fontFamily: 'Poppins-Bold' }}
+					className="text-4xl self-start mt-12"
+				>
+					Choose your city
+				</Text>
+				<Text
+					className="text-lg leading-snug mt-4"
+					style={{ fontFamily: 'Inter-Regular' }}
+				>
+					To complete the sign up process, please select which city you currently
+					reside in.
+				</Text>
 
-      <View className="mt-6">
-        {ALL_LOCATIONS.map((cat, i) => {
-          const isSelected = i == selectedIndex
-          return (
-            <TouchableOpacity
-              key={cat}
-              style={[
-                styles.categoryItem,
-                isSelected && styles.categoryItemSelected,
-              ]}
-              onPress={() => setSelectedIndex(i)}
-            >
-              <Text style={styles.categoryText}>{cat}</Text>
-              {isSelected && (
-                <FontAwesome name="check" size={16} color="green" />
-              )}
-            </TouchableOpacity>
-          )
-        })}
-      </View>
+				<View className="mt-6">
+					{ALL_LOCATIONS.map((cat, i) => {
+						const isSelected = i == selectedIndex
+						return (
+							<TouchableOpacity
+								key={cat}
+								style={[
+									styles.categoryItem,
+									isSelected && styles.categoryItemSelected,
+								]}
+								onPress={() => setSelectedIndex(i)}
+							>
+								<Text style={styles.categoryText}>{cat}</Text>
+								{isSelected && (
+									<FontAwesome name="check" size={16} color="green" />
+								)}
+							</TouchableOpacity>
+						)
+					})}
+				</View>
 
-      <TouchableOpacity
-        className={`rounded-2xl my-2 p-6 mt-auto ${
-          selectedIndex == null ? 'bg-gray-400' : 'bg-black'
-        }`}
-        onPress={handleContinue}
-        disabled={selectedIndex == null}
-      >
-        <Text className="text-xl font-bold text-center text-white">
-          Continue
-        </Text>
-      </TouchableOpacity>
+				<TouchableOpacity
+					className={`rounded-2xl my-2 p-6 mt-4 ${
+selectedIndex == null ? 'bg-gray-400' : 'bg-black'
+}`}
+					onPress={handleContinue}
+					disabled={selectedIndex == null}
+				>
+					<Text className="text-xl font-bold text-center text-white">
+						Continue
+					</Text>
+				</TouchableOpacity>
+			</ScrollView>
     </View>
   )
 }
