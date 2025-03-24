@@ -123,10 +123,20 @@ const ProfileSettings = () => {
             keyboardType="phone-pad"
           />
         </View>
+        {/* Email Address */}
+        <View className="py-6">
+          <Text className="text-xs text-gray-500">EMAIL ADDRESS</Text>
+          <TextInput
+            className="border-b border-gray-300 text-lg text-black py-2"
+            value={email}
+            editable={false}
+            style={{ opacity: 0.5 }}
+          />
+        </View>
         {/* Location */}
         <View>
           <Text className="text-xs text-gray-500">LOCATION</Text>
-          <View className="border-b border-gray-300">
+          <View className="border-gray-300">
             <Picker
               selectedValue={selectedLocation}
               onValueChange={(itemValue) => setSelectedLocation(itemValue)}
@@ -137,16 +147,6 @@ const ProfileSettings = () => {
               ))}
             </Picker>
           </View>
-        </View>
-        {/* Email Address */}
-        <View className="py-6">
-          <Text className="text-xs text-gray-500">EMAIL ADDRESS</Text>
-          <TextInput
-            className="border-b border-gray-300 text-lg text-black py-2"
-            value={email}
-            editable={false}
-            style={{ opacity: 0.5 }}
-          />
         </View>
       </View>
 
