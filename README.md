@@ -1,4 +1,6 @@
 # SMVS Youth App
+## Video 
+https://youtu.be/uiHFWNFx3Uc
 
 ## Running the repo
 1. Add in the two env files. One in the root and one in /frontend
